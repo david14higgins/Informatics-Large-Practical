@@ -19,8 +19,5 @@ public class SystemController {
         NamedRegion[] noFlyZones = client.getNoFlyZones();
         NamedRegion centralArea = client.getCentralArea();
         Order[] ordersByDate = client.getOrderByDate();
-
-
-
     }
 }

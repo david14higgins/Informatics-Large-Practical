@@ -14,8 +14,8 @@ import java.time.LocalDate;
 
 public class RestApiClient {
 
-    private String baseUrl;
-    private String date;
+    private final String baseUrl;
+    private final String date;
 
     public RestApiClient(String[] args) {
         if (args.length < 2){
