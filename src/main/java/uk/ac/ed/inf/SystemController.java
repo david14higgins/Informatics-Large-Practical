@@ -1,12 +1,10 @@
 package uk.ac.ed.inf;
 
-//This class will be the centre point of the program
-
 import uk.ac.ed.inf.ilp.data.NamedRegion;
 import uk.ac.ed.inf.ilp.data.Order;
 import uk.ac.ed.inf.ilp.data.Restaurant;
 
-
+//This class will be the centre point of the program
 public class SystemController {
 
     //Entry point to program
@@ -19,5 +17,7 @@ public class SystemController {
         NamedRegion[] noFlyZones = client.getNoFlyZones();
         NamedRegion centralArea = client.getCentralArea();
         Order[] ordersByDate = client.getOrderByDate();
+
+
     }
 }
