@@ -11,5 +11,8 @@ public class App
         var orderStatus = OrderStatus.DELIVERED;
 
         System.out.println("IlpDataObjects.jar was used");
+
+        RestApiClient client = new RestApiClient();
+        client.getRestaurants();
     }
 }
