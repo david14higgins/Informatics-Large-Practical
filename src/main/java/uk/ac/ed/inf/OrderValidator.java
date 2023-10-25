@@ -93,7 +93,7 @@ public class OrderValidator implements OrderValidation{
         }
 
         //Check pizza count not exceeded
-        if(orderToValidate.getPizzasInOrder().length > 4) {
+        if(orderToValidate.getPizzasInOrder().length > SystemConstants.MAX_PIZZAS_PER_ORDER) {
             orderToValidate.setOrderStatus(OrderStatus.INVALID);
             orderToValidate.setOrderValidationCode(OrderValidationCode.MAX_PIZZA_COUNT_EXCEEDED);
             return orderToValidate;

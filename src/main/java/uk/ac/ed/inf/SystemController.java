@@ -6,6 +6,8 @@ import uk.ac.ed.inf.ilp.data.NamedRegion;
 import uk.ac.ed.inf.ilp.data.Order;
 import uk.ac.ed.inf.ilp.data.Restaurant;
 
+import java.util.ArrayList;
+
 //This class will be the centre point of the program
 public class SystemController {
 
@@ -29,7 +31,8 @@ public class SystemController {
             order = orderValidator.validateOrder(order, restaurants);
             if (order.getOrderStatus() == OrderStatus.VALID_BUT_NOT_DELIVERED) {
                 //Plan drone route to and from restaurant and write to files
-
+                RoutePlanner routePlanner = new RoutePlanner();
+                //ArrayList<MoveRecord> route = routePlanner.planRoute()
 
 
             }
