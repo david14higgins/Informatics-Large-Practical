@@ -25,7 +25,7 @@ public class MoveRecord {
     }
 
     public double getAngle() {
-        return angle; 
+        return angle;
     }
 
     public LngLat getToPosition() {
