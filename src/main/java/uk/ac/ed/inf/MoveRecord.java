@@ -6,11 +6,13 @@ public class MoveRecord {
 
     private final String orderNo;
     private final LngLat fromPosition;
+    private final double angle;
     private final LngLat toPosition;
 
-    public MoveRecord(String orderNo, LngLat fromPosition, LngLat toPosition) {
+    public MoveRecord(String orderNo, LngLat fromPosition, double angle, LngLat toPosition) {
         this.orderNo = orderNo;
         this.fromPosition = fromPosition;
+        this.angle = angle;
         this.toPosition = toPosition;
     }
 
@@ -20,6 +22,10 @@ public class MoveRecord {
 
     public LngLat getFromPosition() {
         return fromPosition;
+    }
+
+    public double getAngle() {
+        return angle; 
     }
 
     public LngLat getToPosition() {
