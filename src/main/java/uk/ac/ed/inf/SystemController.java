@@ -34,13 +34,14 @@ public class SystemController {
                 //Plan drone route to and from restaurant and write to files
                 LngLat restaurantLocation = findRestaurantLocation(order, restaurants);
                 RoutePlanner routePlanner = new RoutePlanner();
-                ArrayList<MoveRecord> route = routePlanner.planRoute(appletonTower, restaurantLocation, noFlyZones, centralArea);
+                ArrayList<RouteNode> route = routePlanner.planRoute(appletonTower, restaurantLocation, noFlyZones, centralArea);
                 //These moves will need to be written to the JSON files
             }
 
             //Need to write order to deliveries file regardless of whether the order was delivered
 
         }
+
     }
 
     //Returns the LngLat location of the restaurant in a valid order
