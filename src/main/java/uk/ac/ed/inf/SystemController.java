@@ -44,14 +44,14 @@ public class SystemController {
 
         RoutePlanner routePlanner = new RoutePlanner();
         LngLat source = new LngLat(-3.186874, 55.944494);
-        LngLat destination = new LngLat(-3.202541470527649, 55.943284737579376);
+        LngLat destination = new LngLat(-3.1838572025299072, 55.94449876875712);
         ArrayList<RouteNode> path = routePlanner.planRoute(source, destination, null, null);
         for (RouteNode routeNode : path) {
             System.out.println(routeNode.getPosition().lng() + ", " + routeNode.getPosition().lat());
         }
 
         GeoJsonWriter geoJsonWriter = new GeoJsonWriter();
-        geoJsonWriter.writeToGeoJson(path, "sora lella test");
+        geoJsonWriter.writeToGeoJson(path, "dominos test");
 
 
 
