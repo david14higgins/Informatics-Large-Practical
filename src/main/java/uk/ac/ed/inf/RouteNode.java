@@ -2,7 +2,7 @@ package uk.ac.ed.inf;
 
 import uk.ac.ed.inf.ilp.data.LngLat;
 
-public class RouteNode {
+public class RouteNode implements Comparable<RouteNode>{
 
     private RouteNode parent;
     private LngLat position;
@@ -11,7 +11,7 @@ public class RouteNode {
     private double g = 0;
     private double h = 0;
 
-    public RouteNode(RouteNode parent, LngLat position) {
+    public RouteNode (RouteNode parent, LngLat position){
         this.parent = parent;
         this.position = position;
     }
@@ -23,6 +23,11 @@ public class RouteNode {
                     this.position.lat() == ((RouteNode) o).position.lat();
         }
         return false;
+    }
+
+    @Override
+    public int compareTo(RouteNode o) {
+        return Double.compare(this.f, o.getF());
     }
 
     public double getF() {

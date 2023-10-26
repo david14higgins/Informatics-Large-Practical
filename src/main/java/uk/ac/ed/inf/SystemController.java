@@ -50,6 +50,11 @@ public class SystemController {
             System.out.println(routeNode.getPosition().lng() + ", " + routeNode.getPosition().lat());
         }
 
+        GeoJsonWriter geoJsonWriter = new GeoJsonWriter();
+        geoJsonWriter.writeToGeoJson(path, "test");
+
+
+
     }
 
     //Returns the LngLat location of the restaurant in a valid order

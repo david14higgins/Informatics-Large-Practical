@@ -2,7 +2,8 @@ package uk.ac.ed.inf;
 
 import uk.ac.ed.inf.ilp.data.LngLat;
 import uk.ac.ed.inf.ilp.data.NamedRegion;
-import java.util.ArrayList;
+
+import java.util.*;
 
 import static uk.ac.ed.inf.ilp.constant.SystemConstants.DRONE_MOVE_DISTANCE;
 
@@ -25,8 +26,8 @@ public class RoutePlanner {
         RouteNode destinationNode = new RouteNode(null, destination);
 
         //Initialize open and closed list
-        ArrayList<RouteNode> openList = new ArrayList<>();
-        ArrayList<RouteNode> closedList = new ArrayList<>();
+        PriorityQueue<RouteNode> openList = new PriorityQueue<>();
+        Set<RouteNode> closedList = new HashSet<>();
 
         //Add the start node
         openList.add(startNode);
@@ -35,13 +36,7 @@ public class RoutePlanner {
         while(!openList.isEmpty()) {
 
             //Get the current node - this is the node with the lowest f value
-            RouteNode currentNode = openList.get(0);
-            for (int i = 1; i < openList.size(); i++) {
-                RouteNode nextNode = openList.get(i);
-                if (nextNode.getF() < currentNode.getF()) {
-                    currentNode = nextNode;
-                }
-            }
+            RouteNode currentNode = openList.poll();
 
             //Remove current node from open list and add to closed list
             openList.remove(currentNode);
@@ -55,6 +50,7 @@ public class RoutePlanner {
                     path.add(current);
                     current = current.getParent();
                 }
+                Collections.reverse(path);
                 return path;
             }
 
@@ -69,37 +65,23 @@ public class RoutePlanner {
 
             //Iterate through all children that are not in the closed list
             for (RouteNode child : children) {
+                double tentativeG = currentNode.getG() + DRONE_MOVE_DISTANCE;
 
                 //Check child is not in the closed list
-                boolean childInClosedList = false;
-                for (RouteNode closedChild : closedList) {
-                    if (child.equals(closedChild)) {
-                        childInClosedList = true;
-                        System.out.println("triggered");
+                if (closedList.contains(child) && tentativeG >= child.getG()) {
+                    continue;
+                }
 
+                if (!openList.contains(child) || tentativeG < child.getG()) {
+                    child.setG(tentativeG);
+                    child.setH(lngLatHandler.distanceTo(child.getPosition(), destinationNode.getPosition()));
+                    child.setF(child.getG() + child.getH());
+
+                    if (!openList.contains(child)) {
+                        openList.add(child);
                     }
                 }
-                if(childInClosedList) continue;
-
-                //Calculate the child's f, g and h values
-                child.setG(currentNode.getG() + DRONE_MOVE_DISTANCE);
-                //Could improve this by not using square root
-                child.setH(lngLatHandler.distanceTo(child.getPosition(), destinationNode.getPosition()));
-                child.setF(child.getG() + child.getH());
-
-                //Before adding child to open list, check to see if there is already a better route from this node in the open list
-                boolean betterOpenNode = false;
-                for (RouteNode openNode : openList) {
-                    if(child.equals(openNode) && child.getG() > openNode.getG()) {
-                        betterOpenNode = true;
-                    }
-                }
-                if (betterOpenNode) continue;
-
-                //Otherwise, we can add this child to the open list
-                openList.add(child);
             }
-            //System.out.println(currentNode.getH());
         }
         return null;
     }
