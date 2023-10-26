@@ -14,10 +14,6 @@ public class RoutePlanner {
         - Does not leave central area once it has entered
      */
 
-    /* Efficiency improvements
-     - Use priority queue for open list
-     - Use hash table for closed list
-     */
     public ArrayList<RouteNode> planRoute(LngLat source, LngLat destination, NamedRegion[] noFlyZones, NamedRegion centralArea) {
         LngLatHandler lngLatHandler = new LngLatHandler();
 
@@ -82,6 +78,7 @@ public class RoutePlanner {
                     }
                 }
             }
+            System.out.println(openList.size());
         }
         return null;
     }
