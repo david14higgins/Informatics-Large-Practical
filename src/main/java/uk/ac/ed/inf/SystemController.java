@@ -16,30 +16,38 @@ public class SystemController {
     //Command line parameters are the REST API base URL and the date - Needs validating!
     public static void main(String[] args) {
 
-        //Fetch data from REST API
-        RestApiClient client = new RestApiClient(args);
-        Restaurant[] restaurants = client.getRestaurants();
-        NamedRegion[] noFlyZones = client.getNoFlyZones();
-        NamedRegion centralArea = client.getCentralArea();
-        Order[] ordersByDate = client.getOrderByDate();
+//        //Fetch data from REST API
+//        RestApiClient client = new RestApiClient(args);
+//        Restaurant[] restaurants = client.getRestaurants();
+//        NamedRegion[] noFlyZones = client.getNoFlyZones();
+//        NamedRegion centralArea = client.getCentralArea();
+//        Order[] ordersByDate = client.getOrderByDate();
+//
+//        //Setup OrderValidator and LngLatHandler
+//        OrderValidator orderValidator = new OrderValidator();
+//        LngLat appletonTower = new LngLat(-3.186874, 55.944494);
+//
+//        //Iterate through all fetched orders for that day
+//        for (Order order : ordersByDate) {
+//            order = orderValidator.validateOrder(order, restaurants);
+//            if (order.getOrderStatus() == OrderStatus.VALID_BUT_NOT_DELIVERED) {
+//                //Plan drone route to and from restaurant and write to files
+//                LngLat restaurantLocation = findRestaurantLocation(order, restaurants);
+//                RoutePlanner routePlanner = new RoutePlanner();
+//                ArrayList<RouteNode> route = routePlanner.planRoute(appletonTower, restaurantLocation, noFlyZones, centralArea);
+//                //These moves will need to be written to the JSON files
+//            }
+//
+//            //Need to write order to deliveries file regardless of whether the order was delivered
+//
+//        }
 
-        //Setup OrderValidator and LngLatHandler
-        OrderValidator orderValidator = new OrderValidator();
-        LngLat appletonTower = new LngLat(-3.186874, 55.944494);
-
-        //Iterate through all fetched orders for that day
-        for (Order order : ordersByDate) {
-            order = orderValidator.validateOrder(order, restaurants);
-            if (order.getOrderStatus() == OrderStatus.VALID_BUT_NOT_DELIVERED) {
-                //Plan drone route to and from restaurant and write to files
-                LngLat restaurantLocation = findRestaurantLocation(order, restaurants);
-                RoutePlanner routePlanner = new RoutePlanner();
-                ArrayList<RouteNode> route = routePlanner.planRoute(appletonTower, restaurantLocation, noFlyZones, centralArea);
-                //These moves will need to be written to the JSON files
-            }
-
-            //Need to write order to deliveries file regardless of whether the order was delivered
-
+        RoutePlanner routePlanner = new RoutePlanner();
+        LngLat source = new LngLat(-3.186874, 55.944494);
+        LngLat destination = new LngLat(-3.1912869215011597, 55.945535152517735);
+        ArrayList<RouteNode> path = routePlanner.planRoute(source, destination, null, null);
+        for (RouteNode routeNode : path) {
+            System.out.println(routeNode.getPosition().lng() + ", " + routeNode.getPosition().lat());
         }
 
     }

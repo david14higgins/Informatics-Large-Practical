@@ -4,6 +4,8 @@ import uk.ac.ed.inf.ilp.data.LngLat;
 import uk.ac.ed.inf.ilp.data.NamedRegion;
 import java.util.ArrayList;
 
+import static uk.ac.ed.inf.ilp.constant.SystemConstants.DRONE_MOVE_DISTANCE;
+
 public class RoutePlanner {
 
     /*Use A* Search to plan a route from source to destination that
@@ -46,7 +48,7 @@ public class RoutePlanner {
             closedList.add(currentNode);
 
             // Check to see if destination node has been found
-            if(currentNode.equals(destinationNode)) {
+            if(lngLatHandler.isCloseTo(currentNode.getPosition(), destinationNode.getPosition())) {
                 ArrayList<RouteNode> path = new ArrayList<>();
                 RouteNode current = currentNode;
                 while(current != null) {
@@ -69,32 +71,36 @@ public class RoutePlanner {
             for (RouteNode child : children) {
 
                 //Check child is not in the closed list
+                boolean childInClosedList = false;
                 for (RouteNode closedChild : closedList) {
                     if (child.equals(closedChild)) {
-                        continue;
+                        childInClosedList = true;
+                        System.out.println("triggered");
+
                     }
                 }
+                if(childInClosedList) continue;
 
                 //Calculate the child's f, g and h values
-                child.setG(currentNode.getG() + 1);
+                child.setG(currentNode.getG() + DRONE_MOVE_DISTANCE);
                 //Could improve this by not using square root
                 child.setH(lngLatHandler.distanceTo(child.getPosition(), destinationNode.getPosition()));
                 child.setF(child.getG() + child.getH());
 
                 //Before adding child to open list, check to see if there is already a better route from this node in the open list
+                boolean betterOpenNode = false;
                 for (RouteNode openNode : openList) {
                     if(child.equals(openNode) && child.getG() > openNode.getG()) {
-                        continue;
+                        betterOpenNode = true;
                     }
                 }
+                if (betterOpenNode) continue;
 
                 //Otherwise, we can add this child to the open list
                 openList.add(child);
             }
-
+            //System.out.println(currentNode.getH());
         }
-
-
         return null;
     }
 
