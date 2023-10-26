@@ -11,6 +11,11 @@ public class RoutePlanner {
         - Does not enter no fly zones
         - Does not leave central area once it has entered
      */
+
+    /* Efficiency improvements
+     - Use priority queue for open list
+     - Use hash table for closed list 
+     */
     public ArrayList<MoveRecord> planRoute(LngLat source, LngLat destination, NamedRegion[] noFlyZones, NamedRegion centralArea) {
         return null;
     }

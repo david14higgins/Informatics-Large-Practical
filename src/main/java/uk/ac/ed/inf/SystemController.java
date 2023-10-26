@@ -35,7 +35,7 @@ public class SystemController {
                 LngLat restaurantLocation = findRestaurantLocation(order, restaurants);
                 RoutePlanner routePlanner = new RoutePlanner();
                 ArrayList<MoveRecord> route = routePlanner.planRoute(appletonTower, restaurantLocation, noFlyZones, centralArea);
-                //These moves will need to be written to the JSON files 
+                //These moves will need to be written to the JSON files
             }
 
             //Need to write order to deliveries file regardless of whether the order was delivered
