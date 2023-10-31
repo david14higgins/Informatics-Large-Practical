@@ -3,18 +3,20 @@ package uk.ac.ed.inf;
 import java.util.ArrayList;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import uk.ac.ed.inf.ilp.data.LngLat;
+
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class GeoJsonWriter {
-    public void writeToGeoJson(ArrayList<RouteNode> path, String fileName) {
+    public void writeToGeoJson(ArrayList<LngLat> path, String fileName) {
         JSONArray coordinates = new JSONArray();
-        for (RouteNode routeNode : path) {
+        for (LngLat position : path) {
             JSONArray coordinate = new JSONArray();
-            coordinate.put(routeNode.getPosition().lng());
-            coordinate.put(routeNode.getPosition().lat());
+            coordinate.put(position.lng());
+            coordinate.put(position.lat());
             coordinates.put(coordinate);
         }
 
