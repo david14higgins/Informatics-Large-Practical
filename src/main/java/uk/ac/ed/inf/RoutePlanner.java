@@ -19,46 +19,41 @@ public class RoutePlanner {
     public ArrayList<LngLat> planRoute(LngLat source, LngLat destination, NamedRegion[] noFlyZones, NamedRegion centralArea) {
         LngLatHandler lngLatHandler = new LngLatHandler();
 
-        //Consider switching to a hashset
-        ArrayList<LngLat> openList = new ArrayList<>();
-        Set<LngLat> closedList = new HashSet<>();
-
         //Rather than using a node object, we opt for a series of hash tables to save memory
         //We can index the desired value using the position as a key
         HashMap<LngLat, Double> fValues = new HashMap<>();
         HashMap<LngLat, Double> gValues = new HashMap<>();
         HashMap<LngLat, Double> hValues = new HashMap<>();
+
         //Key is child, value is parent
         HashMap<LngLat, LngLat> parentOfChild = new HashMap<>();
+
+        //Consider switching to a hashset
+        //ArrayList<LngLat> openList = new ArrayList<>();
+        PriorityQueue<LngLat> openList = new PriorityQueue<>(Comparator.comparingDouble(fValues::get));
+        Set<LngLat> closedList = new HashSet<>();
+
+
+
 
 
         openList.add(source);
         fValues.put(source, 0.0);
         gValues.put(source, 0.0);
-        hValues.put(source, 0.0);
+        hValues.put(source, lngLatHandler.distanceTo(source, destination));
         parentOfChild.put(source, null);
 
         while(!openList.isEmpty()) {
 
-            double minF = Double.MAX_VALUE;
-            LngLat currentNode = null;
-            for (LngLat position : openList) {
-                double positionF = fValues.get(position);
-                if (positionF < minF) {
-                    minF = positionF;
-                    currentNode = position;
-                }
-            }
-            openList.remove(currentNode);
+            LngLat currentNode = openList.poll();
             closedList.add(currentNode);
 
             //Check to see if destination node has been found
             if (lngLatHandler.isCloseTo(currentNode, destination)) {
                 ArrayList<LngLat> path = new ArrayList<>();
-                LngLat current = currentNode;
-                while(current != null) {
-                    path.add(current);
-                    current = parentOfChild.get(current);
+                while(currentNode != null) {
+                    path.add(currentNode);
+                    currentNode = parentOfChild.get(currentNode);
                 }
                 return path;
              }
