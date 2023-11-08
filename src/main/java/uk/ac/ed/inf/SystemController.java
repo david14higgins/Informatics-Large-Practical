@@ -32,56 +32,35 @@ public class SystemController {
 
         //Routes Hashtable key = restaurant name, value = lnglat route
         HashMap<String, ArrayList<LngLat>> routesTable = new HashMap<>();
-        ArrayList<LngLat> overAllRoute = new ArrayList<>();
+        ArrayList<LngLat> dailyRoute = new ArrayList<>();
 
         //Iterate through all fetched orders for that day
         for (Order order : ordersByDate) {
             order = orderValidator.validateOrder(order, restaurants);
-            if(order.getOrderStatus() == OrderStatus.INVALID) {
-                System.out.println(order.getOrderNo());
-            }
             if (order.getOrderStatus() == OrderStatus.VALID_BUT_NOT_DELIVERED) {
                 //Get the order's restaurant
                 Restaurant orderRestaurant = findOrderRestaurant(order, restaurants);
                 //System.out.println(orderRestaurant.name());
                 //If route has not already been found, find route and add to hashtable
+
+                assert orderRestaurant != null;
                 if(!routesTable.containsKey(orderRestaurant.name())) {
                     LngLat destination = orderRestaurant.location();
                     ArrayList<LngLat> route = routePlanner.planRoute(appletonTower, destination, noFlyZones, centralArea);
                     routesTable.put(orderRestaurant.name(), route);
-                    overAllRoute.addAll(route);
-                    //Add return route
-                    ArrayList<LngLat> reverseRoute = new ArrayList<>(route);
-                    Collections.reverse(reverseRoute);
-                    overAllRoute.addAll(reverseRoute);
-                } else {
-                    ArrayList<LngLat> route = routesTable.get(orderRestaurant.name());
-                    overAllRoute.addAll(route);
-                    //Add return route
-                    ArrayList<LngLat> reverseRoute = new ArrayList<>(route);
-                    Collections.reverse(reverseRoute);
-                    overAllRoute.addAll(reverseRoute);
                 }
+                ArrayList<LngLat> destinationToSourceRoute = routesTable.get(orderRestaurant.name());
+                //Create a copy and reverse it
+                ArrayList<LngLat> sourceToDestinationRoute = new ArrayList<>(destinationToSourceRoute);
+                Collections.reverse(sourceToDestinationRoute);
+
+                //Add trip to daily route
+                dailyRoute.addAll(sourceToDestinationRoute);
+                dailyRoute.addAll(destinationToSourceRoute);
             }
-
-            //Need to write order to deliveries file regardless of whether the order was delivered
         }
-//        GeoJsonWriter geoJsonWriter = new GeoJsonWriter();
-//        geoJsonWriter.writeToGeoJson(overAllRoute, "drone-" + args[0]);
-
-//        RoutePlanner routePlanner = new RoutePlanner();
-//        LngLat source = new LngLat(-3.186874, 55.944494);
-//        LngLat destination = new LngLat(-3.166300, 55.933350);
-//        ArrayList<LngLat> path = routePlanner.planRouteNew(source, destination);
-//        for (LngLat routeNode : path) {
-//            System.out.println(routeNode.lng() + ", " + routeNode.lat());
-//        }
-//
-//        GeoJsonWriter geoJsonWriter = new GeoJsonWriter();
-//        geoJsonWriter.writeToGeoJson(path, "julia test");
-
-
-
+        GeoJsonWriter geoJsonWriter = new GeoJsonWriter();
+        geoJsonWriter.writeToGeoJson(dailyRoute, "drone-" + args[0]);
     }
 
     //Returns the LngLat location of the restaurant in a valid order

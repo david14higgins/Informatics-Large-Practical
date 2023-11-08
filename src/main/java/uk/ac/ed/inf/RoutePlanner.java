@@ -14,6 +14,8 @@ public class RoutePlanner {
         - Does not enter no fly zones
         - Does not leave central area once it has entered
      */
+
+    //Returns a list of LngLat positions in reverse order from destination to source
     public ArrayList<LngLat> planRoute(LngLat source, LngLat destination, NamedRegion[] noFlyZones, NamedRegion centralArea) {
         LngLatHandler lngLatHandler = new LngLatHandler();
 
@@ -58,7 +60,6 @@ public class RoutePlanner {
                     path.add(current);
                     current = parentOfChild.get(current);
                 }
-                Collections.reverse(path);
                 return path;
              }
 
