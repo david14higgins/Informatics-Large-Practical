@@ -30,18 +30,15 @@ public class RoutePlanner {
 
         //Consider switching to a hashset
         //ArrayList<LngLat> openList = new ArrayList<>();
-        PriorityQueue<LngLat> openList = new PriorityQueue<>(Comparator.comparingDouble(fValues::get));
+        PriorityQueue<LngLat> openList = new PriorityQueue<>((a, b) -> Double.compare(fValues.get(a), fValues.get(b)));
         Set<LngLat> closedList = new HashSet<>();
 
-
-
-
-
-        openList.add(source);
-        fValues.put(source, 0.0);
         gValues.put(source, 0.0);
         hValues.put(source, lngLatHandler.distanceTo(source, destination));
+        fValues.put(source, gValues.get(source) + hValues.get(source));
         parentOfChild.put(source, null);
+
+        openList.add(source);
 
         while(!openList.isEmpty()) {
 
@@ -69,16 +66,13 @@ public class RoutePlanner {
             //Iterate through all children that are not in the closed list
             for (LngLat child : children) {
 
-                gValues.put(child, 0.0);
-                hValues.put(child, 0.0);
-                fValues.put(child, 0.0);
+                //Check child is not in the closed list
+                if (closedList.contains(child)) {
+                    continue;
+                }
 
                 double tentativeG = gValues.get(currentNode) + DRONE_MOVE_DISTANCE;
 
-                //Check child is not in the closed list
-                if (closedList.contains(child) && tentativeG >= gValues.get(child)) {
-                    continue;
-                }
 
                 if (!openList.contains(child) || tentativeG < gValues.get(child)) {
                     gValues.put(child, tentativeG);
@@ -86,12 +80,10 @@ public class RoutePlanner {
                     fValues.put(child, gValues.get(child) + hValues.get(child));
                     parentOfChild.put(child, currentNode);
 
-
                     if (!openList.contains(child)) {
                         openList.add(child);
                     }
                 }
-
             }
         }
         return null;

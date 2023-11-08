@@ -42,21 +42,22 @@ public class SystemController {
                 Restaurant orderRestaurant = findOrderRestaurant(order, restaurants);
                 //System.out.println(orderRestaurant.name());
                 //If route has not already been found, find route and add to hashtable
+                if (!orderRestaurant.name().equals("Sora Lella Vegan Restaurant")) {
+                    assert orderRestaurant != null;
+                    if(!routesTable.containsKey(orderRestaurant.name())) {
+                        LngLat destination = orderRestaurant.location();
+                        ArrayList<LngLat> route = routePlanner.planRoute(appletonTower, destination, noFlyZones, centralArea);
+                        routesTable.put(orderRestaurant.name(), route);
+                    }
+                    ArrayList<LngLat> destinationToSourceRoute = routesTable.get(orderRestaurant.name());
+                    //Create a copy and reverse it
+                    ArrayList<LngLat> sourceToDestinationRoute = new ArrayList<>(destinationToSourceRoute);
+                    Collections.reverse(sourceToDestinationRoute);
 
-                assert orderRestaurant != null;
-                if(!routesTable.containsKey(orderRestaurant.name())) {
-                    LngLat destination = orderRestaurant.location();
-                    ArrayList<LngLat> route = routePlanner.planRoute(appletonTower, destination, noFlyZones, centralArea);
-                    routesTable.put(orderRestaurant.name(), route);
+                    //Add trip to daily route
+                    dailyRoute.addAll(sourceToDestinationRoute);
+                    dailyRoute.addAll(destinationToSourceRoute);
                 }
-                ArrayList<LngLat> destinationToSourceRoute = routesTable.get(orderRestaurant.name());
-                //Create a copy and reverse it
-                ArrayList<LngLat> sourceToDestinationRoute = new ArrayList<>(destinationToSourceRoute);
-                Collections.reverse(sourceToDestinationRoute);
-
-                //Add trip to daily route
-                dailyRoute.addAll(sourceToDestinationRoute);
-                dailyRoute.addAll(destinationToSourceRoute);
             }
         }
         GeoJsonWriter geoJsonWriter = new GeoJsonWriter();
