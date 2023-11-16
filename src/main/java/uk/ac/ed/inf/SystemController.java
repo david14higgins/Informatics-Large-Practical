@@ -29,6 +29,7 @@ public class SystemController {
         OrderValidator orderValidator = new OrderValidator();
         RoutePlanner routePlanner = new RoutePlanner();
         LngLat appletonTower = new LngLat(-3.186874, 55.944494);
+        LngLat testSource = new LngLat(-3.1855, 55.9436);
 
         //Routes Hashtable key = restaurant name, value = lnglat route
         HashMap<String, ArrayList<LngLat>> routesTable = new HashMap<>();
@@ -46,7 +47,7 @@ public class SystemController {
                 assert orderRestaurant != null;
                 if(!routesTable.containsKey(orderRestaurant.name())) {
                     LngLat destination = orderRestaurant.location();
-                    ArrayList<LngLat> route = routePlanner.planRoute(appletonTower, destination, noFlyZones, centralArea);
+                    ArrayList<LngLat> route = routePlanner.planRoute(testSource, destination, noFlyZones, centralArea);
                     routesTable.put(orderRestaurant.name(), route);
                 }
                 ArrayList<LngLat> destinationToSourceRoute = routesTable.get(orderRestaurant.name());

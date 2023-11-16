@@ -27,13 +27,13 @@ public class RoutePlanner {
 
         //Consider switching to a hashset
         ArrayList<LngLat> openList = new ArrayList<>();
-        Set<LngLat> closedList = new HashSet<>();
+        HashSet<LngLat> closedList = new HashSet<>();
 
 
         openList.add(source);
-        fValues.put(source, 0.0);
         gValues.put(source, 0.0);
-        hValues.put(source, 0.0);
+        hValues.put(source, lngLatHandler.distanceTo(source, destination));
+        fValues.put(source, gValues.get(source) + hValues.get(source));
         parentOfChild.put(source, null);
 
         while(!openList.isEmpty()) {
@@ -79,7 +79,22 @@ public class RoutePlanner {
                 double tentativeG = gValues.get(currentNode) + DRONE_MOVE_DISTANCE;
 
                 //Check child is not in the closed list
-                if (closedList.contains(child) && tentativeG >= gValues.get(child)) {
+                //if (closedList.contains(child) && tentativeG >= gValues.get(child)) {
+                //    continue;
+                //}
+                if (closedList.contains(child)) {
+                    continue;
+                }
+
+                //Check child is not in a no-fly-zone
+                boolean inNoFlyZone = false;
+                for (NamedRegion namedRegion : noFlyZones) {
+                    if (lngLatHandler.isInRegion(child, namedRegion)) {
+                        inNoFlyZone = true;
+                        break;
+                    }
+                }
+                if(inNoFlyZone) {
                     continue;
                 }
 
@@ -94,7 +109,6 @@ public class RoutePlanner {
                         openList.add(child);
                     }
                 }
-
             }
         }
         return null;
