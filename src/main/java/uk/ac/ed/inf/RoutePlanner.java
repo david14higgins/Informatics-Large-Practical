@@ -19,17 +19,15 @@ public class RoutePlanner {
     public ArrayList<LngLat> planRoute(LngLat source, LngLat destination, NamedRegion[] noFlyZones, NamedRegion centralArea) {
         LngLatHandler lngLatHandler = new LngLatHandler();
 
-        //Consider switching to a hashset
-        ArrayList<LngLat> openList = new ArrayList<>();
-        Set<LngLat> closedList = new HashSet<>();
-
-        //Rather than using a node object, we opt for a series of hash tables to save memory
-        //We can index the desired value using the position as a key
         HashMap<LngLat, Double> fValues = new HashMap<>();
         HashMap<LngLat, Double> gValues = new HashMap<>();
         HashMap<LngLat, Double> hValues = new HashMap<>();
-        //Key is child, value is parent
         HashMap<LngLat, LngLat> parentOfChild = new HashMap<>();
+
+
+        //Consider switching to a hashset
+        ArrayList<LngLat> openList = new ArrayList<>();
+        Set<LngLat> closedList = new HashSet<>();
 
 
         openList.add(source);

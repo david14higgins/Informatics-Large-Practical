@@ -11,6 +11,8 @@ import uk.ac.ed.inf.ilp.interfaces.OrderValidation;
 import java.time.DayOfWeek;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
 public class OrderValidator implements OrderValidation{
 
@@ -35,9 +37,23 @@ public class OrderValidator implements OrderValidation{
         }
 
         //Check expiry date is valid
-        //Create formatter for extracting expiry month and year
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/yy");
-        YearMonth expiryDate = YearMonth.parse(cardInfo.getCreditCardExpiry(), formatter);
+        //First check the date provided is a valid date
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/yy");
+        //Can accept invalid dates
+        simpleDateFormat.setLenient(false);
+        try {
+            simpleDateFormat.parse(cardInfo.getCreditCardExpiry());
+        } catch (ParseException e) {
+            orderToValidate.setOrderStatus(OrderStatus.INVALID);
+            orderToValidate.setOrderValidationCode(OrderValidationCode.EXPIRY_DATE_INVALID);
+            return orderToValidate;
+        }
+        //Next check the expiry date is after the current date
+
+        //------------- NEEDS UPDATING ----------- CHECK AFTER ORDER DATE ------------------
+
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("MM/yy");
+        YearMonth expiryDate = YearMonth.parse(cardInfo.getCreditCardExpiry(), dateTimeFormatter);
         YearMonth currentYearMonth = YearMonth.now();
         if(expiryDate.isBefore(currentYearMonth)) {
             orderToValidate.setOrderStatus(OrderStatus.INVALID);
