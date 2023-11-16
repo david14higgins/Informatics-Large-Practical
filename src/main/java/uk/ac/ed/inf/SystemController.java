@@ -47,13 +47,13 @@ public class SystemController {
                 assert orderRestaurant != null;
                 if(!routesTable.containsKey(orderRestaurant.name())) {
                     LngLat destination = orderRestaurant.location();
-                    ArrayList<LngLat> route = routePlanner.planRoute(testSource, destination, noFlyZones, centralArea);
+                    ArrayList<LngLat> route = routePlanner.planRoute(appletonTower, destination, noFlyZones, centralArea);
                     routesTable.put(orderRestaurant.name(), route);
                 }
-                ArrayList<LngLat> destinationToSourceRoute = routesTable.get(orderRestaurant.name());
+                ArrayList<LngLat> sourceToDestinationRoute = routesTable.get(orderRestaurant.name());
                 //Create a copy and reverse it
-                ArrayList<LngLat> sourceToDestinationRoute = new ArrayList<>(destinationToSourceRoute);
-                Collections.reverse(sourceToDestinationRoute);
+                ArrayList<LngLat> destinationToSourceRoute = new ArrayList<>(sourceToDestinationRoute);
+                Collections.reverse(destinationToSourceRoute);
 
                 //Add trip to daily route
                 dailyRoute.addAll(sourceToDestinationRoute);

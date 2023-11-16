@@ -10,11 +10,6 @@ import static uk.ac.ed.inf.ilp.constant.SystemConstants.DRONE_MOVE_DISTANCE;
 
 public class RoutePlanner {
 
-    /*Use A* Search to plan a route from source to destination that
-        - Does not enter no fly zones
-        - Does not leave central area once it has entered
-     */
-
     //Returns a list of LngLat positions in reverse order from destination to source
     public ArrayList<LngLat> planRoute(LngLat source, LngLat destination, NamedRegion[] noFlyZones, NamedRegion centralArea) {
         LngLatHandler lngLatHandler = new LngLatHandler();
@@ -24,11 +19,8 @@ public class RoutePlanner {
         HashMap<LngLat, Double> hValues = new HashMap<>();
         HashMap<LngLat, LngLat> parentOfChild = new HashMap<>();
 
-
-        //Consider switching to a hashset
-        //ArrayList<LngLat> openList = new ArrayList<>();
         HashSet<LngLat> closedList = new HashSet<>();
-        PriorityQueue<LngLat> openList = new PriorityQueue<>((a, b) -> Double.compare(fValues.get(a), fValues.get(b)));
+        PriorityQueue<LngLat> openList = new PriorityQueue<>(Comparator.comparingDouble(fValues::get));
 
         openList.add(source);
         gValues.put(source, 0.0);
@@ -38,20 +30,8 @@ public class RoutePlanner {
 
         while(!openList.isEmpty()) {
 
-//            double minF = Double.MAX_VALUE;
-//            LngLat currentNode = null;
-//            for (LngLat position : openList) {
-//                double positionF = fValues.get(position);
-//                if (positionF < minF) {
-//                    minF = positionF;
-//                    currentNode = position;
-//                }
-//            }
-//            openList.remove(currentNode);
-
             LngLat currentNode = openList.poll();
             closedList.add(currentNode);
-            //System.out.println(hValues.get(currentNode));
             //Check to see if destination node has been found
             if (lngLatHandler.isCloseTo(currentNode, destination)) {
                 ArrayList<LngLat> path = new ArrayList<>();
@@ -60,6 +40,7 @@ public class RoutePlanner {
                     path.add(current);
                     current = parentOfChild.get(current);
                 }
+                Collections.reverse(path);
                 return path;
              }
 
@@ -74,19 +55,10 @@ public class RoutePlanner {
             //Iterate through all children that are not in the closed list
             for (LngLat child : children) {
 
-                gValues.put(child, 0.0);
-                //hValues.put(child, 0.0);
-                //fValues.put(child, 0.0);
-
                 double tentativeG = gValues.get(currentNode) + DRONE_MOVE_DISTANCE;
 
                 //Check child is not in the closed list
-                //if (closedList.contains(child) && tentativeG >= gValues.get(child)) {
-                //    continue;
-                //}
-                if (closedList.contains(child)) {
-                    continue;
-                }
+                if (closedList.contains(child)) continue;
 
                 //Check child is not in a no-fly-zone
                 boolean inNoFlyZone = false;
@@ -96,24 +68,19 @@ public class RoutePlanner {
                         break;
                     }
                 }
-                if(inNoFlyZone) {
-                    continue;
-                }
+                if(inNoFlyZone) continue;
 
-
-
-                if (!openList.contains(child) || tentativeG < gValues.get(child)) {
+                gValues.put(child, 0.0);
+                if (!openList.contains(child)) {
                     gValues.put(child, tentativeG);
                     hValues.put(child, lngLatHandler.distanceTo(child, destination));
                     fValues.put(child, gValues.get(child) + hValues.get(child));
                     parentOfChild.put(child, currentNode);
 
-
-                    if (!openList.contains(child)) {
-                        openList.add(child);
-                    }
+                    openList.add(child);
                 }
             }
+
         }
         return null;
     }
