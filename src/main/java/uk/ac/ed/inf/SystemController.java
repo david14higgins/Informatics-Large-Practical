@@ -14,9 +14,21 @@ import java.util.HashMap;
 //This class will be the centre point of the program
 public class SystemController {
 
+
+
+    /* ------------------- UP NEXT -------------------------------
+
+    RoutePlanner should return a series of RouteStep objects which contain the lnglat positions of source and destination
+    and the angle between them.
+
+    The GeoJsonWriter then needs to be adjusted to build the route using this new data structure
+
+     */
+
     //Entry point to program
     //Command line parameters are the REST API base URL and the date - Needs validating!
     public static void main(String[] args) {
+        long startTime = System.currentTimeMillis();
 
         //Fetch data from REST API
         RestApiClient client = new RestApiClient(args);
@@ -62,6 +74,11 @@ public class SystemController {
         }
         GeoJsonWriter geoJsonWriter = new GeoJsonWriter();
         geoJsonWriter.writeToGeoJson(dailyRoute, "drone-" + args[0]);
+
+        long endTime = System.currentTimeMillis();
+        long elapsedTime = endTime - startTime;
+
+        System.out.println("Elapsed time: " + elapsedTime + " milliseconds");
     }
 
     //Returns the LngLat location of the restaurant in a valid order

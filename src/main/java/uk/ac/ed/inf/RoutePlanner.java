@@ -18,6 +18,7 @@ public class RoutePlanner {
         HashMap<LngLat, Double> gValues = new HashMap<>();
         HashMap<LngLat, Double> hValues = new HashMap<>();
         HashMap<LngLat, LngLat> parentOfChild = new HashMap<>();
+        HashMap<LngLatPair, Direction> moveDirection = new HashMap<>();
 
         HashSet<LngLat> closedList = new HashSet<>();
         PriorityQueue<LngLat> openList = new PriorityQueue<>(Comparator.comparingDouble(fValues::get));
@@ -35,6 +36,7 @@ public class RoutePlanner {
             //Check to see if destination node has been found
             if (lngLatHandler.isCloseTo(currentNode, destination)) {
                 ArrayList<LngLat> path = new ArrayList<>();
+
                 LngLat current = currentNode;
                 while(current != null) {
                     path.add(current);
@@ -45,15 +47,9 @@ public class RoutePlanner {
              }
 
             //Generate children nodes
-            ArrayList<LngLat> children = new ArrayList<>();
-            for (Direction direction : Direction.values()) {
-                LngLat newPosition = lngLatHandler.nextPosition(currentNode, direction.getAngle());
-                //Check child is not in a no-fly zone
-                children.add(newPosition);
-            }
 
-            //Iterate through all children that are not in the closed list
-            for (LngLat child : children) {
+            for (Direction direction : Direction.values()) {
+                LngLat child = lngLatHandler.nextPosition(currentNode, direction.getAngle());
 
                 double tentativeG = gValues.get(currentNode) + DRONE_MOVE_DISTANCE;
 
@@ -76,6 +72,8 @@ public class RoutePlanner {
                     hValues.put(child, lngLatHandler.distanceTo(child, destination));
                     fValues.put(child, gValues.get(child) + hValues.get(child));
                     parentOfChild.put(child, currentNode);
+                    LngLatPair sourceDestination = new LngLatPair(currentNode, child);
+                    moveDirection.put(sourceDestination, direction);
 
                     openList.add(child);
                 }
