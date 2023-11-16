@@ -26,9 +26,9 @@ public class RoutePlanner {
 
 
         //Consider switching to a hashset
-        ArrayList<LngLat> openList = new ArrayList<>();
+        //ArrayList<LngLat> openList = new ArrayList<>();
         HashSet<LngLat> closedList = new HashSet<>();
-
+        PriorityQueue<LngLat> openList = new PriorityQueue<>((a, b) -> Double.compare(fValues.get(a), fValues.get(b)));
 
         openList.add(source);
         gValues.put(source, 0.0);
@@ -38,18 +38,20 @@ public class RoutePlanner {
 
         while(!openList.isEmpty()) {
 
-            double minF = Double.MAX_VALUE;
-            LngLat currentNode = null;
-            for (LngLat position : openList) {
-                double positionF = fValues.get(position);
-                if (positionF < minF) {
-                    minF = positionF;
-                    currentNode = position;
-                }
-            }
-            openList.remove(currentNode);
-            closedList.add(currentNode);
+//            double minF = Double.MAX_VALUE;
+//            LngLat currentNode = null;
+//            for (LngLat position : openList) {
+//                double positionF = fValues.get(position);
+//                if (positionF < minF) {
+//                    minF = positionF;
+//                    currentNode = position;
+//                }
+//            }
+//            openList.remove(currentNode);
 
+            LngLat currentNode = openList.poll();
+            closedList.add(currentNode);
+            //System.out.println(hValues.get(currentNode));
             //Check to see if destination node has been found
             if (lngLatHandler.isCloseTo(currentNode, destination)) {
                 ArrayList<LngLat> path = new ArrayList<>();
@@ -73,8 +75,8 @@ public class RoutePlanner {
             for (LngLat child : children) {
 
                 gValues.put(child, 0.0);
-                hValues.put(child, 0.0);
-                fValues.put(child, 0.0);
+                //hValues.put(child, 0.0);
+                //fValues.put(child, 0.0);
 
                 double tentativeG = gValues.get(currentNode) + DRONE_MOVE_DISTANCE;
 
@@ -97,6 +99,8 @@ public class RoutePlanner {
                 if(inNoFlyZone) {
                     continue;
                 }
+
+
 
                 if (!openList.contains(child) || tentativeG < gValues.get(child)) {
                     gValues.put(child, tentativeG);
