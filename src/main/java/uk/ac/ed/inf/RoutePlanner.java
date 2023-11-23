@@ -3,7 +3,6 @@ package uk.ac.ed.inf;
 import uk.ac.ed.inf.ilp.data.LngLat;
 import uk.ac.ed.inf.ilp.data.NamedRegion;
 
-import java.lang.reflect.Array;
 import java.util.*;
 
 import static uk.ac.ed.inf.ilp.constant.SystemConstants.DRONE_MOVE_DISTANCE;
@@ -11,17 +10,18 @@ import static uk.ac.ed.inf.ilp.constant.SystemConstants.DRONE_MOVE_DISTANCE;
 public class RoutePlanner {
 
     //Returns a list of LngLat positions in reverse order from destination to source
-    public ArrayList<LngLat> planRoute(LngLat source, LngLat destination, NamedRegion[] noFlyZones, NamedRegion centralArea) {
+    public ArrayList<RouteNode> planRoute(LngLat source, LngLat destination, NamedRegion[] noFlyZones, NamedRegion centralArea) {
         LngLatHandler lngLatHandler = new LngLatHandler();
 
         HashMap<LngLat, Double> fValues = new HashMap<>();
         HashMap<LngLat, Double> gValues = new HashMap<>();
         HashMap<LngLat, Double> hValues = new HashMap<>();
         HashMap<LngLat, LngLat> parentOfChild = new HashMap<>();
-        HashMap<LngLatPair, Direction> moveDirection = new HashMap<>();
 
         HashSet<LngLat> closedList = new HashSet<>();
         PriorityQueue<LngLat> openList = new PriorityQueue<>(Comparator.comparingDouble(fValues::get));
+
+        HashMap<LngLatPair, Direction> moveDirection = new HashMap<>();
 
         openList.add(source);
         gValues.put(source, 0.0);
@@ -35,14 +35,19 @@ public class RoutePlanner {
             closedList.add(currentNode);
             //Check to see if destination node has been found
             if (lngLatHandler.isCloseTo(currentNode, destination)) {
-                ArrayList<LngLat> path = new ArrayList<>();
-
-                LngLat current = currentNode;
-                while(current != null) {
-                    path.add(current);
-                    current = parentOfChild.get(current);
+                ArrayList<RouteNode> path = new ArrayList<>();
+                LngLat moveDestination = currentNode;
+                LngLat moveSource = parentOfChild.get(moveDestination);
+                while(moveSource != null) {
+                    LngLatPair lngLatPair = new LngLatPair(moveSource, moveDestination);
+                    Direction direction = moveDirection.get(lngLatPair);
+                    RouteNode routeNode = new RouteNode(lngLatPair, direction);
+                    path.add(routeNode);
+                    moveDestination = moveSource;
+                    moveSource = parentOfChild.get(moveDestination);
                 }
                 Collections.reverse(path);
+                //return path;
                 return path;
              }
 
@@ -74,7 +79,6 @@ public class RoutePlanner {
                     parentOfChild.put(child, currentNode);
                     LngLatPair sourceDestination = new LngLatPair(currentNode, child);
                     moveDirection.put(sourceDestination, direction);
-
                     openList.add(child);
                 }
             }
@@ -82,5 +86,6 @@ public class RoutePlanner {
         }
         return null;
     }
-
 }
+
+
