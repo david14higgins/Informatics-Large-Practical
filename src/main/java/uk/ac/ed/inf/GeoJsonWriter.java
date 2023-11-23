@@ -11,9 +11,19 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class GeoJsonWriter {
-    public void writeToGeoJson(ArrayList<LngLat> path, String fileName) {
+    public void writeToGeoJson(ArrayList<MoveInfo> moves, String fileName) {
         JSONArray coordinates = new JSONArray();
-        for (LngLat position : path) {
+        //Add source position from the first move and then just destinations positions after that
+        MoveInfo firstMove = moves.get(0);
+        LngLat firstMoveSource = firstMove.getSourceToDestinationPair().getSourceLngLat();
+        JSONArray firstCoordinate = new JSONArray();
+        firstCoordinate.put(firstMoveSource.lng());
+        firstCoordinate.put(firstMoveSource.lat());
+        coordinates.put(firstCoordinate);
+
+        //Now add destinations from every move
+        for (MoveInfo moveInfo : moves) {
+            LngLat position = moveInfo.getSourceToDestinationPair().getDestinationLngLat();
             JSONArray coordinate = new JSONArray();
             coordinate.put(position.lng());
             coordinate.put(position.lat());
