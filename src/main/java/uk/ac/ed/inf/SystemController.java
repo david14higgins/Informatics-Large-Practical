@@ -84,6 +84,11 @@ public class SystemController {
         FlightpathJsonWriter flightpathJsonWriter = new FlightpathJsonWriter();
         flightpathJsonWriter.writeToJson(ordersByDate, ordersRestaurant, routesTable, "flightpath-" + args[0]);
 
+        //Write deliveries to JSON file
+        DeliveriesJsonWriter deliveriesJsonWriter = new DeliveriesJsonWriter();
+        deliveriesJsonWriter.writeToJson(ordersByDate, "deliveries-" + args[0]);
+
+
         long endTime = System.currentTimeMillis();
         long elapsedTime = endTime - startTime;
 

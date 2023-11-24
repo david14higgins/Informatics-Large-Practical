@@ -49,7 +49,6 @@ public class RoutePlanner {
                 while(moveSource != null) {
                     LngLatPair sourceToDestinationPair = new LngLatPair(moveSource, moveDestination);
                     Direction direction = moveDirection.get(sourceToDestinationPair);
-                    System.out.println(direction.getAngle());
                     MoveInfo routeNode = new MoveInfo(sourceToDestinationPair, direction);
                     path.add(routeNode);
                     moveDestination = moveSource;
