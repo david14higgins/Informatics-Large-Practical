@@ -69,7 +69,11 @@ public class SystemController {
                 ArrayList<MoveInfo> route = routesTable.get(orderRestaurant.name());
                 //Add trip to daily route
                 dailyRoute.addAll(route);
+
+                //Update order status
+                order.setOrderStatus(OrderStatus.DELIVERED);
             }
+
         }
 
         //Write daily route to GeoJSON file
@@ -77,6 +81,8 @@ public class SystemController {
         geoJsonWriter.writeToGeoJson(dailyRoute, "drone-" + args[0]);
 
         //Write flightpath data to JSON file
+        FlightpathJsonWriter flightpathJsonWriter = new FlightpathJsonWriter();
+        flightpathJsonWriter.writeToJson(ordersByDate, ordersRestaurant, routesTable, "flightpath-" + args[0]);
 
         long endTime = System.currentTimeMillis();
         long elapsedTime = endTime - startTime;
