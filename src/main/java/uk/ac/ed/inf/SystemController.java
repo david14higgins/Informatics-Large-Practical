@@ -6,9 +6,15 @@ import uk.ac.ed.inf.ilp.data.NamedRegion;
 import uk.ac.ed.inf.ilp.data.Order;
 import uk.ac.ed.inf.ilp.data.Restaurant;
 import uk.ac.ed.inf.ilp.data.Pizza;
+import uk.ac.ed.inf.input.RestApiClient;
+import uk.ac.ed.inf.orders.OrderValidator;
+import uk.ac.ed.inf.output.DeliveriesJsonWriter;
+import uk.ac.ed.inf.output.FlightpathJsonWriter;
+import uk.ac.ed.inf.output.GeoJsonWriter;
+import uk.ac.ed.inf.routing.MoveInfo;
+import uk.ac.ed.inf.routing.RoutePlanner;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 
 //This class will be the centre point of the program
@@ -44,9 +50,13 @@ public class SystemController {
         RoutePlanner routePlanner = new RoutePlanner();
         LngLat appletonTower = new LngLat(-3.186874, 55.944494);
 
-        //Routes Hashtable key = restaurant name, value = lnglat route
+        //Create data structures which will store information about the routes and orders
+
+        //Hashmap storing the route associated with every restaurant
         HashMap<String, ArrayList<MoveInfo>> routesTable = new HashMap<>();
+        //Stores complete route for the given day
         ArrayList<MoveInfo> dailyRoute = new ArrayList<>();
+        //Hashmap which maps all orders to their corresponding restaurant 
         HashMap<String, String> ordersRestaurant = new HashMap<>();
         //Iterate through all fetched orders for that day
         for (Order order : ordersByDate) {

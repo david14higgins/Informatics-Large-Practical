@@ -4,6 +4,8 @@ import junit.framework.TestCase;
 import uk.ac.ed.inf.ilp.constant.OrderStatus;
 import uk.ac.ed.inf.ilp.constant.OrderValidationCode;
 import uk.ac.ed.inf.ilp.data.*;
+import uk.ac.ed.inf.orders.OrderValidator;
+import uk.ac.ed.inf.routing.LngLatHandler;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;

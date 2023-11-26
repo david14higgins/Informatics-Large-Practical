@@ -1,18 +1,17 @@
-package uk.ac.ed.inf;
+package uk.ac.ed.inf.output;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.gson.stream.JsonWriter;
+import uk.ac.ed.inf.constant.Direction;
+import uk.ac.ed.inf.routing.LngLatPair;
+import uk.ac.ed.inf.routing.MoveInfo;
 import uk.ac.ed.inf.ilp.constant.OrderStatus;
 import uk.ac.ed.inf.ilp.data.LngLat;
 import uk.ac.ed.inf.ilp.data.Order;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 

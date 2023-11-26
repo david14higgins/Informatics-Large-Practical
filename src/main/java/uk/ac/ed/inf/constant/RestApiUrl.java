@@ -1,12 +1,6 @@
-package uk.ac.ed.inf;
+package uk.ac.ed.inf.constant;
 
 public class RestApiUrl {
-
-    /*
-    ------------ IMPORTANT!!! ---------------
-    Base URL will be read from command line so these need to be updated
-    Could have a base URL that is set by the system class?
-     */
 
     public static final String RESTAURANTS_URL = "restaurants";
 

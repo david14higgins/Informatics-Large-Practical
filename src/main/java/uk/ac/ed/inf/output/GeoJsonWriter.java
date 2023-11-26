@@ -1,8 +1,9 @@
-package uk.ac.ed.inf;
+package uk.ac.ed.inf.output;
 
 import java.util.ArrayList;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import uk.ac.ed.inf.routing.MoveInfo;
 import uk.ac.ed.inf.ilp.data.LngLat;
 
 import java.io.FileWriter;

@@ -1,4 +1,7 @@
-package uk.ac.ed.inf;
+package uk.ac.ed.inf.routing;
+
+import uk.ac.ed.inf.constant.Direction;
+import uk.ac.ed.inf.routing.LngLatPair;
 
 public class MoveInfo {
 
