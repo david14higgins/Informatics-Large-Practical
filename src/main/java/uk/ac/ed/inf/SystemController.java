@@ -10,7 +10,7 @@ import uk.ac.ed.inf.input.RestApiClient;
 import uk.ac.ed.inf.orders.OrderValidator;
 import uk.ac.ed.inf.output.DeliveriesJsonWriter;
 import uk.ac.ed.inf.output.FlightpathJsonWriter;
-import uk.ac.ed.inf.output.GeoJsonWriter;
+import uk.ac.ed.inf.output.DroneGeoJsonWriter;
 import uk.ac.ed.inf.routing.MoveInfo;
 import uk.ac.ed.inf.routing.RoutePlanner;
 
@@ -91,16 +91,16 @@ public class SystemController {
         //Can now use information from data structures to write output files
 
         //Write daily route to GeoJSON file
-        GeoJsonWriter geoJsonWriter = new GeoJsonWriter();
-        geoJsonWriter.writeToGeoJson(dailyRoute, "drone-" + args[0]);
+        DroneGeoJsonWriter DroneGeoJsonWriter = new DroneGeoJsonWriter(dailyRoute);
+        DroneGeoJsonWriter.writeToFile("drone-" + args[0]);
 
         //Write flightpath data to JSON file
-        FlightpathJsonWriter flightpathJsonWriter = new FlightpathJsonWriter();
-        flightpathJsonWriter.writeToJson(ordersByDate, ordersRestaurant, routesTable, "flightpath-" + args[0]);
+        FlightpathJsonWriter flightpathJsonWriter = new FlightpathJsonWriter(ordersByDate, ordersRestaurant, routesTable);
+        flightpathJsonWriter.writeToFile("flightpath-" + args[0]);
 
         //Write deliveries to JSON file
-        DeliveriesJsonWriter deliveriesJsonWriter = new DeliveriesJsonWriter();
-        deliveriesJsonWriter.writeToJson(ordersByDate, "deliveries-" + args[0]);
+        DeliveriesJsonWriter deliveriesJsonWriter = new DeliveriesJsonWriter(ordersByDate);
+        deliveriesJsonWriter.writeToFile("deliveries-" + args[0]);
 
         //Output program duration
         long endTime = System.currentTimeMillis();

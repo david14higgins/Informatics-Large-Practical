@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import uk.ac.ed.inf.constant.Direction;
+import uk.ac.ed.inf.interfaces.OutputWriter;
 import uk.ac.ed.inf.routing.LngLatPair;
 import uk.ac.ed.inf.routing.MoveInfo;
 import uk.ac.ed.inf.ilp.constant.OrderStatus;
@@ -15,12 +16,22 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class FlightpathJsonWriter {
+public class FlightpathJsonWriter implements OutputWriter {
 
-    public void writeToJson(Order[] orders,
-                            HashMap<String, String> ordersRestaurant,
-                            HashMap<String, ArrayList<MoveInfo>> routesTable,
-                            String fileName) {
+    private final Order[] orders;
+    private final HashMap<String, String> ordersRestaurant;
+    private final HashMap<String, ArrayList<MoveInfo>> routesTable;
+
+    public FlightpathJsonWriter(Order[] orders,
+                                HashMap<String, String> ordersRestaurant,
+                                HashMap<String, ArrayList<MoveInfo>> routesTable) {
+        this.orders = orders;
+        this.ordersRestaurant = ordersRestaurant;
+        this.routesTable = routesTable;
+    }
+
+    @Override
+    public void writeToFile(String fileName) {
         // Create ObjectMapper instance from Jackson library
         ObjectMapper objectMapper = new ObjectMapper();
         // Enable pretty-printing

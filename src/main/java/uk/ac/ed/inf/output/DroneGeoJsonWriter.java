@@ -1,8 +1,10 @@
 package uk.ac.ed.inf.output;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import uk.ac.ed.inf.interfaces.OutputWriter;
 import uk.ac.ed.inf.routing.MoveInfo;
 import uk.ac.ed.inf.ilp.data.LngLat;
 
@@ -11,11 +13,19 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-public class GeoJsonWriter {
-    public void writeToGeoJson(ArrayList<MoveInfo> moves, String fileName) {
+public class DroneGeoJsonWriter implements OutputWriter {
+
+    private final ArrayList<MoveInfo> routeMoves;
+
+    public DroneGeoJsonWriter(ArrayList<MoveInfo> routeMoves) {
+        this.routeMoves = routeMoves;
+    }
+
+    @Override
+    public void writeToFile(String fileName) {
         JSONArray coordinates = new JSONArray();
         //Add source position from the first move and then just destinations positions after that
-        MoveInfo firstMove = moves.get(0);
+        MoveInfo firstMove = routeMoves.get(0);
         LngLat firstMoveSource = firstMove.getSourceToDestinationPair().getSourceLngLat();
         JSONArray firstCoordinate = new JSONArray();
         firstCoordinate.put(firstMoveSource.lng());
@@ -23,7 +33,7 @@ public class GeoJsonWriter {
         coordinates.put(firstCoordinate);
 
         //Now add destinations from every move
-        for (MoveInfo moveInfo : moves) {
+        for (MoveInfo moveInfo : routeMoves) {
             LngLat position = moveInfo.getSourceToDestinationPair().getDestinationLngLat();
             JSONArray coordinate = new JSONArray();
             coordinate.put(position.lng());

@@ -3,25 +3,26 @@ package uk.ac.ed.inf.routing;
 import uk.ac.ed.inf.constant.Direction;
 import uk.ac.ed.inf.ilp.data.LngLat;
 import uk.ac.ed.inf.ilp.data.NamedRegion;
-import uk.ac.ed.inf.routing.LngLatHandler;
-import uk.ac.ed.inf.routing.LngLatPair;
-import uk.ac.ed.inf.routing.MoveInfo;
-
+import uk.ac.ed.inf.interfaces.RoutePlanning;
 import java.util.*;
 
 import static uk.ac.ed.inf.ilp.constant.SystemConstants.DRONE_MOVE_DISTANCE;
 
 
-public class RoutePlanner {
+public class RoutePlanner implements RoutePlanning{
 
-    private HashMap<Direction, Direction> oppositeDirection = new HashMap<>();
+    //Maps each compass direction to its opposite direction (used when reversing a route)
+    private final HashMap<Direction, Direction> oppositeDirection = new HashMap<>();
 
     public RoutePlanner() {
         setOppositeDirections();
     }
 
-    //Returns a list of LngLat positions in reverse order from destination to source
-    public ArrayList<MoveInfo> planRoute(LngLat source, LngLat destination, NamedRegion[] noFlyZones, NamedRegion centralArea) {
+    @Override
+    public ArrayList<MoveInfo> planRoute(LngLat source,
+                                         LngLat destination,
+                                         NamedRegion[] noFlyZones,
+                                         NamedRegion centralArea) {
         LngLatHandler lngLatHandler = new LngLatHandler();
 
         HashMap<LngLat, Double> fValues = new HashMap<>();
@@ -98,6 +99,7 @@ public class RoutePlanner {
         return null;
     }
 
+    @Override
     public ArrayList<MoveInfo> reverseRoute(ArrayList<MoveInfo> route) {
         ArrayList<MoveInfo> reversedRoute = new ArrayList<>();
         for(int i = route.size() - 1; i >= 0; i--) {

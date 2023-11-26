@@ -4,18 +4,22 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import uk.ac.ed.inf.ilp.constant.OrderStatus;
-import uk.ac.ed.inf.ilp.data.LngLat;
 import uk.ac.ed.inf.ilp.data.Order;
+import uk.ac.ed.inf.interfaces.OutputWriter;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
 
-public class DeliveriesJsonWriter {
+public class DeliveriesJsonWriter implements OutputWriter {
 
-    public void writeToJson(Order[] orders, String fileName) {
+    private final Order[] orders;
+
+    public DeliveriesJsonWriter(Order[] orders) {
+        this.orders = orders;
+    }
+
+    @Override
+    public void writeToFile(String fileName) {
         // Create ObjectMapper instance from Jackson library
         ObjectMapper objectMapper = new ObjectMapper();
         // Enable pretty-printing
