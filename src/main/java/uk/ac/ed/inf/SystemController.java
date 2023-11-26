@@ -24,11 +24,16 @@ public class SystemController {
 
     /* ------------------- UP NEXT -------------------------------
 
-    RoutePlanner should return a series of RouteStep objects which contain the lnglat positions of source and destination
-    and the angle between them.
-
-    The GeoJsonWriter then needs to be adjusted to build the route using this new data structure
-
+    - JavaDoc comments
+    - Comment all code
+    - RestApiClient interface
+    - Graceful error handling
+    - Decide on A* or greedy
+    - Implement no central area return policy
+    - Build uber jar
+    - Test on DICE student machine
+    - Delete App class
+    
      */
 
     //Entry point to program
