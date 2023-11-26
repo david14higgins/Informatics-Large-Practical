@@ -35,6 +35,7 @@ public class SystemController {
     //Command line parameters are the REST API base URL and the date - Needs validating!
     public static void main(String[] args) {
 
+        //Program timer
         long startTime = System.currentTimeMillis();
 
         //Fetch data from REST API
@@ -56,16 +57,17 @@ public class SystemController {
         HashMap<String, ArrayList<MoveInfo>> routesTable = new HashMap<>();
         //Stores complete route for the given day
         ArrayList<MoveInfo> dailyRoute = new ArrayList<>();
-        //Hashmap which maps all orders to their corresponding restaurant 
+        //Hashmap which maps all orders to their corresponding restaurant
         HashMap<String, String> ordersRestaurant = new HashMap<>();
+
         //Iterate through all fetched orders for that day
         for (Order order : ordersByDate) {
+            //Validate the order
             order = orderValidator.validateOrder(order, restaurants);
             if (order.getOrderStatus() == OrderStatus.VALID_BUT_NOT_DELIVERED) {
-                //Get the order's restaurant
+                //Use helper function to find the order's restaurant
                 Restaurant orderRestaurant = findOrderRestaurant(order, restaurants);
                 assert orderRestaurant != null;
-
                 ordersRestaurant.put(order.getOrderNo(), orderRestaurant.name());
 
                 //If route has not already been found, find route and add to hashtable
@@ -76,15 +78,17 @@ public class SystemController {
                     route.addAll(returnRoute);
                     routesTable.put(orderRestaurant.name(), route);
                 }
+
+                //Retrieve route information and add to daily route
                 ArrayList<MoveInfo> route = routesTable.get(orderRestaurant.name());
-                //Add trip to daily route
                 dailyRoute.addAll(route);
 
                 //Update order status
                 order.setOrderStatus(OrderStatus.DELIVERED);
             }
-
         }
+
+        //Can now use information from data structures to write output files
 
         //Write daily route to GeoJSON file
         GeoJsonWriter geoJsonWriter = new GeoJsonWriter();
@@ -98,15 +102,14 @@ public class SystemController {
         DeliveriesJsonWriter deliveriesJsonWriter = new DeliveriesJsonWriter();
         deliveriesJsonWriter.writeToJson(ordersByDate, "deliveries-" + args[0]);
 
-
+        //Output program duration
         long endTime = System.currentTimeMillis();
         long elapsedTime = endTime - startTime;
-
         System.out.println("Elapsed time: " + elapsedTime + " milliseconds");
     }
 
 
-    //Returns the LngLat location of the restaurant in a valid order
+    //Returns the Restaurant of an order - order has been validated and should have one corresponding restaurant
     private static Restaurant findOrderRestaurant (Order order, Restaurant[]restaurants){
         Pizza firstPizzaInOrder = order.getPizzasInOrder()[0];
         //Iterate through possible restaurants
@@ -121,7 +124,7 @@ public class SystemController {
                 }
             }
         }
-        //This method will only be used on a valid order so the restaurant should be found
+        //Should never return null
         return null;
     }
 }
