@@ -24,16 +24,12 @@ public class SystemController {
 
     /* ------------------- UP NEXT -------------------------------
 
-    - JavaDoc comments
-    - Comment all code
-    - RestApiClient interface
     - Graceful error handling
     - Decide on A* or greedy
     - Implement no central area return policy
     - Add hover moves to flightpath
     - Build uber jar
     - Test on DICE student machine
-    - Delete App class
     - No problems
 
      */

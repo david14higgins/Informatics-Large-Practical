@@ -14,11 +14,23 @@ public class RoutePlanner implements RoutePlanning{
     //Maps each compass direction to its opposite direction (used when reversing a route)
     private final HashMap<Direction, Direction> oppositeDirection = new HashMap<>();
 
-    //Constructor calls method that populates the opposite direction map
+    /**
+     * Constructor calls method that populates the oppositeDirection hashmap
+     */
     public RoutePlanner() {
         setOppositeDirections();
     }
 
+    /**
+     * A greedy pathfinding algorithm based upon A*
+     * The algorithm is A* but without the check for improved G positions (since the 16 compass points makes it unlikely
+     * exact positions will be revisited)
+     * @param source LngLat position the route starts at
+     * @param destination LngLat position the route ends at
+     * @param noFlyZones NamedRegions which the route planner must avoid
+     * @param centralArea NamedRegion which the route cannot leave once entered
+     * @return A list of moves representing the route
+     */
     @Override
     public ArrayList<MoveInfo> planRoute(LngLat source,
                                          LngLat destination,
@@ -102,11 +114,15 @@ public class RoutePlanner implements RoutePlanning{
                     openList.add(child);
                 }
             }
-
         }
         return null;
     }
 
+    /**
+     * Reverses a given route (cannot just flip list because need to update directions between LngLat pairs)
+     * @param route A list of moves representing the route to be reversed
+     * @return A list of moves representing the reversed route
+     */
     @Override
     public ArrayList<MoveInfo> reverseRoute(ArrayList<MoveInfo> route) {
         ArrayList<MoveInfo> reversedRoute = new ArrayList<>();
@@ -125,6 +141,10 @@ public class RoutePlanner implements RoutePlanning{
         return reversedRoute;
     }
 
+    /**
+     * Populates the opposite direction hashmap with key value pairs where the key is a direction and the value
+     * associated is the opposite direction. This is helpful in reversing a route
+     */
     private void setOppositeDirections() {
         oppositeDirection.put(Direction.EAST, Direction.WEST);
         oppositeDirection.put(Direction.EAST_SOUTH_EAST, Direction.WEST_NORTH_WEST);

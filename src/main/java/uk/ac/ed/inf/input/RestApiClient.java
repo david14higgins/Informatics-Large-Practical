@@ -13,7 +13,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.LocalDate;
 
-public class RestApiClient {
+public class RestApiClient implements uk.ac.ed.inf.interfaces.RestApiClient {
     private final String baseUrl;
     private final String date;
 
@@ -32,6 +32,7 @@ public class RestApiClient {
         String inputDate = args[0];
         try {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            @SuppressWarnings("unused") //Only var building object to test format is correct - will not be used
             var localDate = LocalDate.parse(inputDate, formatter);
         } catch (DateTimeParseException e) {
             throw new RuntimeException(e);
@@ -46,6 +47,7 @@ public class RestApiClient {
 
         //Check that a valid URL has been given
         try {
+            @SuppressWarnings("unused") //Only building var object to test URL is valid - will not be used 
             var temp = new URL(baseUrl);
         } catch (Exception x) {
             java.lang.System.err.println("The URL is invalid: " + x);
