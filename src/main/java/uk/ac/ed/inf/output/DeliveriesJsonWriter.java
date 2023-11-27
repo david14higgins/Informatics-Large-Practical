@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import uk.ac.ed.inf.constant.OutputPath;
 import uk.ac.ed.inf.ilp.data.Order;
 import uk.ac.ed.inf.interfaces.OutputWriter;
 
@@ -12,15 +13,24 @@ import java.io.IOException;
 
 public class DeliveriesJsonWriter implements OutputWriter {
 
+    //Stores all the orders to be written to the file
     private final Order[] orders;
 
+    /**
+     * Constructor which accepts all information to be written
+     * @param orders The orders for the day
+     */
     public DeliveriesJsonWriter(Order[] orders) {
         this.orders = orders;
     }
 
+    /**
+     * Writes the deliveries output file with all the orders and their status
+     * @param fileName The name of the file to be produced/overwritten
+     */
     @Override
     public void writeToFile(String fileName) {
-        // Create ObjectMapper instance from Jackson library
+        // Create ObjectMapper from Jackson
         ObjectMapper objectMapper = new ObjectMapper();
         // Enable pretty-printing
         objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
@@ -38,14 +48,14 @@ public class DeliveriesJsonWriter implements OutputWriter {
             deliveriesArrayNode.add(deliveryJsonNode);
         }
         // Write JSON array to a file
-        String outputDirectory = "PizzaDronz/resultfiles/";
+        String outputDirectory = OutputPath.PATH + "/";
         //Path outputPath = Paths.get(outputDirectory, fileName + ".json");
         try {
             File outputFile = new File(outputDirectory + fileName + ".json");
             objectMapper.writeValue(outputFile, deliveriesArrayNode);
-            System.out.println("Flightpath JSON file created successfully.");
+            System.out.println("Deliveries JSON file created successfully.");
         } catch (IOException e) {
-            System.out.println("An error occurred while creating the flightpath JSON file.");
+            System.out.println("An error occurred while creating the deliveries JSON file.");
         }
 
 

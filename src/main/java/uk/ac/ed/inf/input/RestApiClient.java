@@ -12,17 +12,23 @@ import java.net.URL;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.LocalDate;
-public class RestApiClient {
 
+public class RestApiClient {
     private final String baseUrl;
     private final String date;
 
+    /**
+     * Constructor for client checks CLI arguments are valid and gracefully terminates program if not
+     * @param args Arguments to be validated
+     */
     public RestApiClient(String[] args) {
+        //Check two arguments passed
         if (args.length < 2){
             java.lang.System.err.println("Date and base URL must be provided");
             java.lang.System.exit(1);
         }
 
+        //Check date is the valid YYYY-MM-DD format
         String inputDate = args[0];
         try {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -32,11 +38,13 @@ public class RestApiClient {
         }
         this.date = inputDate;
 
+        //Add slash to URL if not already given
         var baseUrl = args[1];
-        if (baseUrl.endsWith("/") == false){
+        if (!baseUrl.endsWith("/")){
             baseUrl += "/";
         }
 
+        //Check that a valid URL has been given
         try {
             var temp = new URL(baseUrl);
         } catch (Exception x) {
@@ -46,6 +54,9 @@ public class RestApiClient {
         this.baseUrl = baseUrl;
     }
 
+    /**
+     * @return Array of Restaurant objects from the rest API
+     */
     public Restaurant[] getRestaurants() {
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
@@ -56,6 +67,9 @@ public class RestApiClient {
         }
     }
 
+    /**
+     * @return Array of NamedRegion objects representing the no-fly-zones from the rest API
+     */
     public NamedRegion[] getNoFlyZones() {
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
@@ -66,6 +80,9 @@ public class RestApiClient {
         }
     }
 
+    /**
+     * @return NamedRegion object representing the central area from the rest API
+     */
     public NamedRegion getCentralArea() {
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
@@ -76,16 +93,9 @@ public class RestApiClient {
         }
     }
 
-    public Order[] getAllOrders() {
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule());
-        try {
-            return mapper.readValue(new URL(baseUrl + RestApiUrl.ORDERS_URL), Order[].class);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
+    /**
+     * @return An array of Order objects for the date passed to the client from the rest API
+     */
     public Order[] getOrderByDate() {
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
@@ -94,8 +104,5 @@ public class RestApiClient {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
-
     }
-
 }

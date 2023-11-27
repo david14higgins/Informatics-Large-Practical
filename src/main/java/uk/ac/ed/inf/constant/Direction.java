@@ -1,7 +1,9 @@
 package uk.ac.ed.inf.constant;
 
+/**
+ * Enumeration of all 16 compass directions along with their corresponding angle
+ */
 public enum Direction {
-
     EAST(0),
     EAST_SOUTH_EAST(22.5),
     SOUTH_EAST(45.0),
@@ -21,10 +23,17 @@ public enum Direction {
 
     private final double angle;
 
+    /**
+     * Constructor which creates Direction and assigns its angle
+     * @param angle double representing the angle of the direction
+     */
     Direction(double angle) {
         this.angle = angle;
     }
 
+    /**
+     * @return angle of the compass direction
+     */
     public double getAngle() {
         return angle;
     }

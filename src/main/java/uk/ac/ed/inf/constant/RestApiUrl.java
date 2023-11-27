@@ -1,5 +1,8 @@
 package uk.ac.ed.inf.constant;
 
+/**
+ * Stores the constant URL endpoints for fetching from the rest API
+ */
 public class RestApiUrl {
 
     public static final String RESTAURANTS_URL = "restaurants";

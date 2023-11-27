@@ -4,6 +4,7 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import uk.ac.ed.inf.constant.OutputPath;
 import uk.ac.ed.inf.interfaces.OutputWriter;
 import uk.ac.ed.inf.routing.MoveInfo;
 import uk.ac.ed.inf.ilp.data.LngLat;
@@ -62,7 +63,7 @@ public class DroneGeoJsonWriter implements OutputWriter {
         featureCollection.put("type", "FeatureCollection");
         featureCollection.put("features", features);
 
-        String outputDirectory = "PizzaDronz/resultfiles";
+        String outputDirectory = OutputPath.PATH;
         Path outputPath = Paths.get(outputDirectory, fileName + ".geojson");
 
         // Writing to a GeoJSON file

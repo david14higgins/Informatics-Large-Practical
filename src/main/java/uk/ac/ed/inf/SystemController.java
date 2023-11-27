@@ -30,34 +30,39 @@ public class SystemController {
     - Graceful error handling
     - Decide on A* or greedy
     - Implement no central area return policy
+    - Add hover moves to flightpath
     - Build uber jar
     - Test on DICE student machine
     - Delete App class
-    
+    - No problems
+
      */
 
-    //Entry point to program
-    //Command line parameters are the REST API base URL and the date - Needs validating!
+
+    /**
+     * Centre point of the program
+     * Fetches data from rest api, validates orders, plans routes and then produces output files
+     * @param args Expecting a date of form YYYY-MM-DD and the rest api URL
+     */
     public static void main(String[] args) {
 
         //Program timer
         long startTime = System.currentTimeMillis();
 
-        //Fetch data from REST API
+        //Fetch data from REST API. Client will gracefully terminate program if arguments are invalid
         RestApiClient client = new RestApiClient(args);
         Restaurant[] restaurants = client.getRestaurants();
         NamedRegion[] noFlyZones = client.getNoFlyZones();
         NamedRegion centralArea = client.getCentralArea();
         Order[] ordersByDate = client.getOrderByDate();
 
-        //Setup OrderValidator
-        OrderValidator orderValidator = new OrderValidator();
-
-        RoutePlanner routePlanner = new RoutePlanner();
         LngLat appletonTower = new LngLat(-3.186874, 55.944494);
 
-        //Create data structures which will store information about the routes and orders
+        //Setup OrderValidator and route planner objects
+        OrderValidator orderValidator = new OrderValidator();
+        RoutePlanner routePlanner = new RoutePlanner();
 
+        //Create data structures which will store information about the routes and orders
         //Hashmap storing the route associated with every restaurant
         HashMap<String, ArrayList<MoveInfo>> routesTable = new HashMap<>();
         //Stores complete route for the given day
@@ -115,6 +120,13 @@ public class SystemController {
 
 
     //Returns the Restaurant of an order - order has been validated and should have one corresponding restaurant
+
+    /**
+     * Helper function which returns the Restaurant associated with an order
+     * @param order A validated order
+     * @param restaurants The complete list of restaurants
+     * @return The restaurant which the order is for
+     */
     private static Restaurant findOrderRestaurant (Order order, Restaurant[]restaurants){
         Pizza firstPizzaInOrder = order.getPizzasInOrder()[0];
         //Iterate through possible restaurants
