@@ -3,7 +3,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import uk.ac.ed.inf.constant.OutputPath;
 import uk.ac.ed.inf.interfaces.OutputWriter;
 import uk.ac.ed.inf.routing.LngLatPair;
 import uk.ac.ed.inf.routing.MoveInfo;
@@ -68,19 +67,14 @@ public class FlightpathJsonWriter implements OutputWriter {
                 }
             }
         }
+
         // Write JSON array to a file
-        String outputDirectory = OutputPath.PATH + "/";
-        //Path outputPath = Paths.get(outputDirectory, fileName + ".json");
         try {
             File outputFile = new File("resultfiles/" + fileName + ".json");
             outputFile.getParentFile().mkdirs();
             FileWriter outputFileWriter = new FileWriter(outputFile);
             outputFileWriter.write(objectMapper.writeValueAsString(movesArrayNode));
             outputFileWriter.close();
-
-
-            //File outputFile = new File(outputDirectory + fileName + ".json");
-            //objectMapper.writeValue(outputFile, movesArrayNode);
             System.out.println("Flightpath JSON file created successfully.");
         } catch (IOException e) {
             java.lang.System.err.println("An error occurred while creating the flightpath JSON file.");

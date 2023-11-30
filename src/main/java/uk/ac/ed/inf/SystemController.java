@@ -18,19 +18,12 @@ import uk.ac.ed.inf.routing.RoutePlanner;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-//This class will be the centre point of the program
 public class SystemController {
-
-
-
     /* ------------------- UP NEXT -------------------------------
-
-    - Build uber jar
     - Test on DICE student machine
     - Write tests
-    - Graceful error handling writing to file
+    - Test by inspection
      */
-
 
     /**
      * Centre point of the program

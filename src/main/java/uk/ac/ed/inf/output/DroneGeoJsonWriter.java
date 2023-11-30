@@ -4,15 +4,12 @@ import java.io.File;
 import java.util.ArrayList;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import uk.ac.ed.inf.constant.OutputPath;
 import uk.ac.ed.inf.interfaces.OutputWriter;
 import uk.ac.ed.inf.routing.MoveInfo;
 import uk.ac.ed.inf.ilp.data.LngLat;
 
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 public class DroneGeoJsonWriter implements OutputWriter {
 
@@ -67,24 +64,14 @@ public class DroneGeoJsonWriter implements OutputWriter {
         featureCollection.put("type", "FeatureCollection");
         featureCollection.put("features", features);
 
-        String outputDirectory = OutputPath.PATH;
-        Path outputPath = Paths.get(outputDirectory, fileName + ".geojson");
-
-        // Writing to a GeoJSON file
-//        try (FileWriter file = new FileWriter(outputPath.toString())) {
-//            file.write(featureCollection.toString());
-//            System.out.println("GeoJSON file created successfully.");
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            System.out.println("An error occurred while creating the GeoJSON file.");
-//        }
+        // Write GeoJSON to a file
         try {
             File outputFile = new File("resultfiles/" + fileName + ".geojson");
             outputFile.getParentFile().mkdirs();
             FileWriter outputFileWriter = new FileWriter(outputFile);
             outputFileWriter.write(featureCollection.toString());
             outputFileWriter.close();
-            System.out.println("GeoJSON file created successfully.");
+            System.out.println("Drone GeoJSON file created successfully.");
         } catch (IOException e) {
             java.lang.System.err.println("An error occurred while creating the drone GeoJSON file.");
             java.lang.System.exit(2);

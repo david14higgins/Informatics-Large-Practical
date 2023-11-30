@@ -121,7 +121,7 @@ public class LngLatHandler implements LngLatHandling{
             double radians = angle * Math.PI / 180;
             double adjacent = SystemConstants.DRONE_MOVE_DISTANCE * Math.cos(radians);
             double opposite = SystemConstants.DRONE_MOVE_DISTANCE * Math.sin(radians);
-            return new LngLat(startPosition.lng() + adjacent, startPosition.lat() - opposite);
+            return new LngLat(startPosition.lng() + adjacent, startPosition.lat() + opposite);
         } else {
             return null;
         }
