@@ -12,14 +12,19 @@ import static uk.ac.ed.inf.ilp.constant.SystemConstants.DRONE_MOVE_DISTANCE;
 public class RoutePlanner implements RoutePlanning{
 
     //Maps each compass direction to its opposite direction (used when reversing a route)
-    private final HashMap<Direction, Direction> oppositeDirection = new HashMap<>();
+    private final HashMap<Double, Double> oppositeAngle = new HashMap<>();
 
     /**
-     * Constructor calls method that populates the oppositeDirection hashmap
+     * Constructor calls method that populates the oppositeAngle hashmap
      */
     public RoutePlanner() {
-        setOppositeDirections();
+        setOppositeAngles();
     }
+
+
+    /*
+    If current position is not in central area, make sure no new nodes can be made that are now in the central area
+     */
 
     /**
      * A greedy pathfinding algorithm based upon A*
@@ -74,7 +79,7 @@ public class RoutePlanner implements RoutePlanning{
                 while(moveSource != null) {
                     LngLatPair sourceToDestinationPair = new LngLatPair(moveSource, moveDestination);
                     Direction direction = moveDirection.get(sourceToDestinationPair);
-                    MoveInfo routeNode = new MoveInfo(sourceToDestinationPair, direction);
+                    MoveInfo routeNode = new MoveInfo(sourceToDestinationPair, direction.getAngle());
                     path.add(routeNode);
                     moveDestination = moveSource;
                     moveSource = parentOfChild.get(moveDestination);
@@ -129,39 +134,39 @@ public class RoutePlanner implements RoutePlanning{
         for(int i = route.size() - 1; i >= 0; i--) {
             MoveInfo moveToReverse = route.get(i);
             LngLatPair pairToReverse = moveToReverse.getSourceToDestinationPair();
-            LngLat oldSource = pairToReverse.getSourceLngLat();
-            LngLat oldDestination = pairToReverse.getDestinationLngLat();
+            LngLat oldSource = pairToReverse.sourceLngLat();
+            LngLat oldDestination = pairToReverse.destinationLngLat();
             LngLatPair reversedPair = new LngLatPair(oldDestination, oldSource);
-            Direction reversedDirection = oppositeDirection.get(moveToReverse.getDirection());
+            Double reversedAngle = oppositeAngle.get(moveToReverse.getAngle());
 
             //Build new MoveInfo object and add to new reversed route
-            MoveInfo reversedMove = new MoveInfo(reversedPair, reversedDirection);
+            MoveInfo reversedMove = new MoveInfo(reversedPair, reversedAngle);
             reversedRoute.add(reversedMove);
         }
         return reversedRoute;
     }
 
     /**
-     * Populates the opposite direction hashmap with key value pairs where the key is a direction and the value
-     * associated is the opposite direction. This is helpful in reversing a route
+     * Populates the opposite angle hashmap with key value pairs where the key is an angle and the value
+     * associated is the angle of the direction opposite to it. This is helpful in reversing a route
      */
-    private void setOppositeDirections() {
-        oppositeDirection.put(Direction.EAST, Direction.WEST);
-        oppositeDirection.put(Direction.EAST_SOUTH_EAST, Direction.WEST_NORTH_WEST);
-        oppositeDirection.put(Direction.SOUTH_EAST, Direction.NORTH_WEST);
-        oppositeDirection.put(Direction.SOUTH_SOUTH_EAST, Direction.NORTH_NORTH_WEST);
-        oppositeDirection.put(Direction.SOUTH, Direction.NORTH);
-        oppositeDirection.put(Direction.SOUTH_SOUTH_WEST, Direction.NORTH_NORTH_EAST);
-        oppositeDirection.put(Direction.SOUTH_WEST, Direction.NORTH_EAST);
-        oppositeDirection.put(Direction.WEST_SOUTH_WEST, Direction.EAST_NORTH_EAST);
-        oppositeDirection.put(Direction.WEST, Direction.EAST);
-        oppositeDirection.put(Direction.WEST_NORTH_WEST, Direction.EAST_SOUTH_EAST);
-        oppositeDirection.put(Direction.NORTH_WEST, Direction.SOUTH_EAST);
-        oppositeDirection.put(Direction.NORTH_NORTH_WEST, Direction.SOUTH_SOUTH_EAST);
-        oppositeDirection.put(Direction.NORTH, Direction.SOUTH);
-        oppositeDirection.put(Direction.NORTH_NORTH_EAST, Direction.SOUTH_SOUTH_WEST);
-        oppositeDirection.put(Direction.NORTH_EAST, Direction.SOUTH_WEST);
-        oppositeDirection.put(Direction.EAST_NORTH_EAST, Direction.WEST_SOUTH_WEST);
+    private void setOppositeAngles() {
+        oppositeAngle.put(Direction.EAST.getAngle(), Direction.WEST.getAngle());
+        oppositeAngle.put(Direction.EAST_SOUTH_EAST.getAngle(), Direction.WEST_NORTH_WEST.getAngle());
+        oppositeAngle.put(Direction.SOUTH_EAST.getAngle(), Direction.NORTH_WEST.getAngle());
+        oppositeAngle.put(Direction.SOUTH_SOUTH_EAST.getAngle(), Direction.NORTH_NORTH_WEST.getAngle());
+        oppositeAngle.put(Direction.SOUTH.getAngle(), Direction.NORTH.getAngle());
+        oppositeAngle.put(Direction.SOUTH_SOUTH_WEST.getAngle(), Direction.NORTH_NORTH_EAST.getAngle());
+        oppositeAngle.put(Direction.SOUTH_WEST.getAngle(), Direction.NORTH_EAST.getAngle());
+        oppositeAngle.put(Direction.WEST_SOUTH_WEST.getAngle(), Direction.EAST_NORTH_EAST.getAngle());
+        oppositeAngle.put(Direction.WEST.getAngle(), Direction.EAST.getAngle());
+        oppositeAngle.put(Direction.WEST_NORTH_WEST.getAngle(), Direction.EAST_SOUTH_EAST.getAngle());
+        oppositeAngle.put(Direction.NORTH_WEST.getAngle(), Direction.SOUTH_EAST.getAngle());
+        oppositeAngle.put(Direction.NORTH_NORTH_WEST.getAngle(), Direction.SOUTH_SOUTH_EAST.getAngle());
+        oppositeAngle.put(Direction.NORTH.getAngle(), Direction.SOUTH.getAngle());
+        oppositeAngle.put(Direction.NORTH_NORTH_EAST.getAngle(), Direction.SOUTH_SOUTH_WEST.getAngle());
+        oppositeAngle.put(Direction.NORTH_EAST.getAngle(), Direction.SOUTH_WEST.getAngle());
+        oppositeAngle.put(Direction.EAST_NORTH_EAST.getAngle(), Direction.WEST_SOUTH_WEST.getAngle());
     }
 }
 

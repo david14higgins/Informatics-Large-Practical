@@ -1,6 +1,5 @@
 package uk.ac.ed.inf.output;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -26,20 +25,24 @@ public class DroneGeoJsonWriter implements OutputWriter {
     public void writeToFile(String fileName) {
         JSONArray coordinates = new JSONArray();
         //Add source position from the first move and then just destinations positions after that
-        MoveInfo firstMove = routeMoves.get(0);
-        LngLat firstMoveSource = firstMove.getSourceToDestinationPair().getSourceLngLat();
-        JSONArray firstCoordinate = new JSONArray();
-        firstCoordinate.put(firstMoveSource.lng());
-        firstCoordinate.put(firstMoveSource.lat());
-        coordinates.put(firstCoordinate);
+        if(!routeMoves.isEmpty()) {
+            MoveInfo firstMove = routeMoves.get(0);
+            LngLat firstMoveSource = firstMove.getSourceToDestinationPair().sourceLngLat();
+            JSONArray firstCoordinate = new JSONArray();
+            firstCoordinate.put(firstMoveSource.lng());
+            firstCoordinate.put(firstMoveSource.lat());
+            coordinates.put(firstCoordinate);
+        }
 
-        //Now add destinations from every move
+        //Now add destinations from every non hover move
         for (MoveInfo moveInfo : routeMoves) {
-            LngLat position = moveInfo.getSourceToDestinationPair().getDestinationLngLat();
-            JSONArray coordinate = new JSONArray();
-            coordinate.put(position.lng());
-            coordinate.put(position.lat());
-            coordinates.put(coordinate);
+            if(moveInfo.getAngle() != 999) {
+                LngLat position = moveInfo.getSourceToDestinationPair().destinationLngLat();
+                JSONArray coordinate = new JSONArray();
+                coordinate.put(position.lng());
+                coordinate.put(position.lat());
+                coordinates.put(coordinate);
+            }
         }
 
         // Creating a LineString feature
@@ -71,6 +74,7 @@ public class DroneGeoJsonWriter implements OutputWriter {
             file.write(featureCollection.toString());
             System.out.println("GeoJSON file created successfully.");
         } catch (IOException e) {
+            e.printStackTrace();
             System.out.println("An error occurred while creating the GeoJSON file.");
         }
     }

@@ -9,6 +9,7 @@ import uk.ac.ed.inf.ilp.data.Pizza;
 import uk.ac.ed.inf.ilp.data.Restaurant;
 import uk.ac.ed.inf.ilp.interfaces.OrderValidation;
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.text.ParseException;
@@ -48,14 +49,14 @@ public class OrderValidator implements OrderValidation{
             orderToValidate.setOrderValidationCode(OrderValidationCode.EXPIRY_DATE_INVALID);
             return orderToValidate;
         }
-        //Next check the expiry date is after the current date
 
-        //------------- NEEDS UPDATING ----------- CHECK AFTER ORDER DATE ------------------
-
+        //Next check the expiry date is after the order date
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("MM/yy");
         YearMonth expiryDate = YearMonth.parse(cardInfo.getCreditCardExpiry(), dateTimeFormatter);
-        YearMonth currentYearMonth = YearMonth.now();
-        if(expiryDate.isBefore(currentYearMonth)) {
+        LocalDate orderDate = orderToValidate.getOrderDate();
+        YearMonth ymOrderDate = YearMonth.of(orderDate.getYear(), orderDate.getMonth());
+        //YearMonth currentYearMonth = YearMonth.now();
+        if(expiryDate.isBefore(ymOrderDate)) {
             orderToValidate.setOrderStatus(OrderStatus.INVALID);
             orderToValidate.setOrderValidationCode(OrderValidationCode.EXPIRY_DATE_INVALID);
             return orderToValidate;
@@ -135,6 +136,7 @@ public class OrderValidator implements OrderValidation{
                 //Assume it hasn't been found and search for it
                 boolean pizzaFound = false;
                 Pizza nextPizzaOnOrder = orderToValidate.getPizzasInOrder()[i];
+                assert firstPizzaRestaurant != null;
                 for (Pizza pizzaOnMenu : firstPizzaRestaurant.menu()) {
                     if (nextPizzaOnOrder.name().equals(pizzaOnMenu.name()) &&
                             nextPizzaOnOrder.priceInPence() == pizzaOnMenu.priceInPence()) {
@@ -158,6 +160,7 @@ public class OrderValidator implements OrderValidation{
         //Assume restaurant is closed and search to see if it is open
         boolean restaurantOpen = false;
         DayOfWeek dayOfOrder = orderToValidate.getOrderDate().getDayOfWeek();
+        assert firstPizzaRestaurant != null;
         for (DayOfWeek day : firstPizzaRestaurant.openingDays()) {
             if(day.getValue() == dayOfOrder.getValue()) {
                 restaurantOpen = true;

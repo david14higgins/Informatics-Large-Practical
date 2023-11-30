@@ -11,6 +11,7 @@ import uk.ac.ed.inf.orders.OrderValidator;
 import uk.ac.ed.inf.output.DeliveriesJsonWriter;
 import uk.ac.ed.inf.output.FlightpathJsonWriter;
 import uk.ac.ed.inf.output.DroneGeoJsonWriter;
+import uk.ac.ed.inf.routing.LngLatPair;
 import uk.ac.ed.inf.routing.MoveInfo;
 import uk.ac.ed.inf.routing.RoutePlanner;
 
@@ -24,13 +25,11 @@ public class SystemController {
 
     /* ------------------- UP NEXT -------------------------------
 
-    - Graceful error handling
-    - Decide on A* or greedy
     - Implement no central area return policy
-    - Add hover moves to flightpath
     - Build uber jar
     - Test on DICE student machine
-    - No problems
+    - Make sure works for days where there are no inputs
+    - SORT ANGLES OUT!!!
 
      */
 
@@ -52,6 +51,7 @@ public class SystemController {
         NamedRegion centralArea = client.getCentralArea();
         Order[] ordersByDate = client.getOrderByDate();
 
+
         LngLat appletonTower = new LngLat(-3.186874, 55.944494);
 
         //Setup OrderValidator and route planner objects
@@ -59,7 +59,7 @@ public class SystemController {
         RoutePlanner routePlanner = new RoutePlanner();
 
         //Create data structures which will store information about the routes and orders
-        //Hashmap storing the route associated with every restaurant
+        //Hashmap storing the route (and return route) associated with every restaurant, including hovers
         HashMap<String, ArrayList<MoveInfo>> routesTable = new HashMap<>();
         //Stores complete route for the given day
         ArrayList<MoveInfo> dailyRoute = new ArrayList<>();
@@ -78,10 +78,25 @@ public class SystemController {
 
                 //If route has not already been found, find route and add to hashtable
                 if (!routesTable.containsKey(orderRestaurant.name())) {
+                    //Calculate route
                     LngLat destination = orderRestaurant.location();
                     ArrayList<MoveInfo> route = routePlanner.planRoute(appletonTower, destination, noFlyZones, centralArea);
+
+                    //Calculate return route
                     ArrayList<MoveInfo> returnRoute = routePlanner.reverseRoute(route);
+
+                    //Add hover at restaurant
+                    MoveInfo lastMove = route.get(route.size() - 1);
+                    LngLat posCloseToRestaurant = lastMove.getSourceToDestinationPair().destinationLngLat();
+                    route.add(new MoveInfo(new LngLatPair(posCloseToRestaurant, posCloseToRestaurant), 999));
+
+                    //Now add return route
                     route.addAll(returnRoute);
+
+                    //Add hover at appleton tower
+                    route.add(new MoveInfo(new LngLatPair(appletonTower, appletonTower), 999));
+
+                    //Add route to hashmap
                     routesTable.put(orderRestaurant.name(), route);
                 }
 

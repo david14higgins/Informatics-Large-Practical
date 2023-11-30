@@ -3,7 +3,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import uk.ac.ed.inf.constant.Direction;
 import uk.ac.ed.inf.constant.OutputPath;
 import uk.ac.ed.inf.interfaces.OutputWriter;
 import uk.ac.ed.inf.routing.LngLatPair;
@@ -52,16 +51,16 @@ public class FlightpathJsonWriter implements OutputWriter {
                 //Iterate through moves in route and add to movesArrayNode
                 for (MoveInfo move : route) {
                     LngLatPair sourceDestinationPair = move.getSourceToDestinationPair();
-                    LngLat source = sourceDestinationPair.getSourceLngLat();
-                    LngLat destination = sourceDestinationPair.getDestinationLngLat();
-                    Direction direction = move.getDirection();
+                    LngLat source = sourceDestinationPair.sourceLngLat();
+                    LngLat destination = sourceDestinationPair.destinationLngLat();
+                    double angle = move.getAngle();
 
                     //Create move JSON object and add to movesArrayNode
                     ObjectNode moveJsonNode = objectMapper.createObjectNode();
                     moveJsonNode.put("orderNo", order.getOrderNo());
                     moveJsonNode.put("fromLongitude", source.lng());
                     moveJsonNode.put("fromLatitude", source.lat());
-                    moveJsonNode.put("angle", direction.getAngle());
+                    moveJsonNode.put("angle", angle);
                     moveJsonNode.put("toLongitude", destination.lng());
                     moveJsonNode.put("toLatitude", destination.lat());
                     movesArrayNode.add(moveJsonNode);
@@ -76,6 +75,7 @@ public class FlightpathJsonWriter implements OutputWriter {
             objectMapper.writeValue(outputFile, movesArrayNode);
             System.out.println("Flightpath JSON file created successfully.");
         } catch (IOException e) {
+            e.printStackTrace();
             System.out.println("An error occurred while creating the flightpath JSON file.");
         }
 

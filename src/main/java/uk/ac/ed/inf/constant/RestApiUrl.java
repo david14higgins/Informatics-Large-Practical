@@ -12,4 +12,6 @@ public class RestApiUrl {
     public static final String CENTRAL_AREA_URL = "centralArea";
 
     public static final String ORDERS_URL = "orders";
+
+    public static final String ALIVE_URL = "isAlive";
 }

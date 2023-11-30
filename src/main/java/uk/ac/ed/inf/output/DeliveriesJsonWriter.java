@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.json.JSONWriter;
 import uk.ac.ed.inf.constant.OutputPath;
 import uk.ac.ed.inf.ilp.data.Order;
 import uk.ac.ed.inf.interfaces.OutputWriter;
@@ -50,11 +51,17 @@ public class DeliveriesJsonWriter implements OutputWriter {
         // Write JSON array to a file
         String outputDirectory = OutputPath.PATH + "/";
         //Path outputPath = Paths.get(outputDirectory, fileName + ".json");
+        //Path resourcesPath = Paths.get(JSONWriter.class.getClassLoader().getResource(""));
+
+        String currentDirectory = System.getProperty("user.dir");
+        System.out.println(currentDirectory);
+
         try {
             File outputFile = new File(outputDirectory + fileName + ".json");
             objectMapper.writeValue(outputFile, deliveriesArrayNode);
             System.out.println("Deliveries JSON file created successfully.");
         } catch (IOException e) {
+            e.printStackTrace();
             System.out.println("An error occurred while creating the deliveries JSON file.");
         }
 
