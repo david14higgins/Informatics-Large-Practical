@@ -10,6 +10,7 @@ import uk.ac.ed.inf.ilp.data.Order;
 import uk.ac.ed.inf.interfaces.OutputWriter;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 
 public class DeliveriesJsonWriter implements OutputWriter {
@@ -53,16 +54,20 @@ public class DeliveriesJsonWriter implements OutputWriter {
         //Path outputPath = Paths.get(outputDirectory, fileName + ".json");
         //Path resourcesPath = Paths.get(JSONWriter.class.getClassLoader().getResource(""));
 
-        String currentDirectory = System.getProperty("user.dir");
-        System.out.println(currentDirectory);
 
         try {
-            File outputFile = new File(outputDirectory + fileName + ".json");
-            objectMapper.writeValue(outputFile, deliveriesArrayNode);
+            File outputFile = new File("resultfiles/" + fileName + ".json");
+            outputFile.getParentFile().mkdirs();
+            FileWriter outputFileWriter = new FileWriter(outputFile);
+            outputFileWriter.write(objectMapper.writeValueAsString(deliveriesArrayNode));
+            outputFileWriter.close();
+
+            //File outputFile = new File(outputDirectory + fileName + ".json");
+            //objectMapper.writeValue(outputFile, deliveriesArrayNode);
             System.out.println("Deliveries JSON file created successfully.");
         } catch (IOException e) {
-            e.printStackTrace();
-            System.out.println("An error occurred while creating the deliveries JSON file.");
+            java.lang.System.err.println("An error occurred while creating the deliveries JSON file.");
+            java.lang.System.exit(2);
         }
 
 

@@ -108,6 +108,18 @@ public class RoutePlanner implements RoutePlanning{
                 }
                 if(inNoFlyZone) continue;
 
+                /*
+                For ensuring the drone only enters the central region once inbound -
+                This is the same as checking the drone only leaves the central area once outbound
+                This means checking a child node is not in the central area if we have already left it
+                 */
+                if(!lngLatHandler.isInRegion(currentNode, centralArea)) {
+                    if(lngLatHandler.isInRegion(child, centralArea)) {
+                        continue;
+                    }
+                }
+
+
                 gValues.put(child, 0.0);
                 if (!openList.contains(child)) {
                     gValues.put(child, tentativeG);

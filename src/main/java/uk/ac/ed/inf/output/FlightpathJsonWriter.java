@@ -12,6 +12,7 @@ import uk.ac.ed.inf.ilp.data.LngLat;
 import uk.ac.ed.inf.ilp.data.Order;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -71,12 +72,19 @@ public class FlightpathJsonWriter implements OutputWriter {
         String outputDirectory = OutputPath.PATH + "/";
         //Path outputPath = Paths.get(outputDirectory, fileName + ".json");
         try {
-            File outputFile = new File(outputDirectory + fileName + ".json");
-            objectMapper.writeValue(outputFile, movesArrayNode);
+            File outputFile = new File("resultfiles/" + fileName + ".json");
+            outputFile.getParentFile().mkdirs();
+            FileWriter outputFileWriter = new FileWriter(outputFile);
+            outputFileWriter.write(objectMapper.writeValueAsString(movesArrayNode));
+            outputFileWriter.close();
+
+
+            //File outputFile = new File(outputDirectory + fileName + ".json");
+            //objectMapper.writeValue(outputFile, movesArrayNode);
             System.out.println("Flightpath JSON file created successfully.");
         } catch (IOException e) {
-            e.printStackTrace();
-            System.out.println("An error occurred while creating the flightpath JSON file.");
+            java.lang.System.err.println("An error occurred while creating the flightpath JSON file.");
+            java.lang.System.exit(2);
         }
 
 

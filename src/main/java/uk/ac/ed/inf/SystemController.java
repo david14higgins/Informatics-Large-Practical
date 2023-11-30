@@ -25,14 +25,10 @@ public class SystemController {
 
     /* ------------------- UP NEXT -------------------------------
 
-    - Implement no central area return policy
     - Build uber jar
     - Test on DICE student machine
-    - Make sure works for days where there are no inputs
-    - SORT ANGLES OUT!!!
-    _ Fix result files path
-    - output last order differently
-
+    - Write tests
+    - Graceful error handling writing to file
      */
 
 
